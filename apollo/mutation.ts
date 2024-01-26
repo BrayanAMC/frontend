@@ -11,3 +11,16 @@ export const LOGIN_USER_MUTATION = gql`
     }
   }
 `;
+
+export const REGISTER_USER_MUTATION = gql`
+  mutation CreateUser($createUserInput: CreateUserInput!) {
+    createUser(CreateUserInput: $createUserInput) {
+        id
+        firstName
+        lastName
+        email
+        accessToken
+        recoveryPasswordToken
+    }
+  }
+  `;

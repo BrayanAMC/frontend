@@ -61,7 +61,7 @@ export default function LoginForm() {
             localStorage.setItem('isUserLoggedIn', 'true');
             localStorage.setItem('isAdmin', 'false');
             localStorage.removeItem("cart");
-            //window.location.href = "/dashboard";
+            window.location.href = "/dashboard";
           } else {
             setError("Credenciales inválidas.");
             setShowAlert(true);
