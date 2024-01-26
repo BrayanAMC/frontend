@@ -24,6 +24,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const [showAlert, setShowAlert] = useState(false);
   const [error, setError] = useState<string | null>(null)
+  
   const [loginUser] = useMutation(LOGIN_USER_MUTATION, {
     client,
   });
@@ -102,7 +103,7 @@ export default function LoginForm() {
           ¿Olvidaste tu contraseña?{" "}
           <Link
             className="text-indigo-500 hover:underline"
-            href="./resetpassword"
+            href="./recoverypassword"
           >
             Recupérala
           </Link>{" "}

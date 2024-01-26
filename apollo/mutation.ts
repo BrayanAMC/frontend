@@ -24,3 +24,21 @@ export const REGISTER_USER_MUTATION = gql`
     }
   }
   `;
+
+export const RECOVERY_PASSWORD_MUTATION = gql`
+  mutation RecoveryPassword($recoveryPasswordInput: RecoveryPasswordInput!) {
+    recoveryPassword(RecoveryPasswordInput: $recoveryPasswordInput) {
+        success
+        message
+    }
+  }
+  `;
+
+export const CHANGE_PASSWORD_MUTATION = gql`
+  mutation ChangePassword($changePasswordInput: ChangePasswordInput!) {
+    changePassword(ChangePasswordInput: $changePasswordInput) {
+        success
+        message
+    }
+  }
+  `;  
