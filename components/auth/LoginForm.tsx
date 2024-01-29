@@ -8,13 +8,28 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alertshad"
 import { useState } from "react"
 import Link from 'next/link'
 import { ApolloClient, InMemoryCache, createHttpLink, useMutation } from "@apollo/client"
+import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:3002/graphql',
 });
 
+const authLink = setContext((_, { headers }) => {
+    const token = localStorage.getItem('tokenUser');
+    console.log("token del user storage: ", token);
+
+    const authHeaders = {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+    }
+    console.log("Headers after authLink: ", authHeaders);
+    return {
+        headers: authHeaders
+    }
+  }) 
+
 const client = new ApolloClient({
-    link: httpLink,
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
 });
 
@@ -24,7 +39,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const [showAlert, setShowAlert] = useState(false);
   const [error, setError] = useState<string | null>(null)
-  
+  const dummyToken = 'dummyToken'
   const [loginUser] = useMutation(LOGIN_USER_MUTATION, {
     client,
   });
@@ -38,6 +53,7 @@ export default function LoginForm() {
       return;
     }
     try {
+        console.log("Entering the try block");
         if (email === "admin@admin.com" && password === "admin") {
           localStorage.setItem('isUserLoggedIn', 'true');
           localStorage.setItem('isAdmin', 'true');
@@ -48,6 +64,7 @@ export default function LoginForm() {
             password,
           };
           //llamada a la api
+          console.log(client);
           const { data } = await loginUser({
             variables: { loginUserInput: input },
           });
@@ -56,6 +73,7 @@ export default function LoginForm() {
             setShowAlert(true);
             localStorage.setItem('idUser', data.login.id);
             localStorage.setItem('tokenUser', data.login.accessToken);//para solicitudes subsiguientes.
+            //localStorage.setItem('tokenUser', dummyToken);//para solicitudes subsiguientes.
             localStorage.setItem('emailUser', data.login.email);
             localStorage.setItem('firstNameUser', data.login.firstName);
             localStorage.setItem('lastNameUser', data.login.lastName);
