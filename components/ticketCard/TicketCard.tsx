@@ -12,24 +12,28 @@ interface Ticket {
     subject: string;
     description: string;
     status: TicketStatus;
-    createdAt: Date;
-    closedAt: Date | null;
+    createdAt: string;
+    closedAt: string | null;
     userId: number;
     assignedToId: number | null;
 }
 
 // RCC
-function TaskCard({ ticket }: { ticket: Ticket }) {
+function TicketCard({ ticket }: { ticket: Ticket }) {
     return (
         <div>
-            <Link href={`/app/dashboard/tickets/${ticket.id}`}>
+            <Link href={{pathname:`/dashboard/tickets/${ticket.id}`, query: {
+                subject: ticket.subject, 
+                description: ticket.description,
+                status: ticket.status,
+                createdAt: ticket.createdAt} }}>
                 <h3>
                     {ticket.id}. {ticket.subject}
                 </h3>
             </Link>
-            <p>{ticket.description}</p>
+           
 
         </div>
     )
 }
-export default TaskCard;
+export default TicketCard;

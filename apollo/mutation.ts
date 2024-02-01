@@ -42,3 +42,12 @@ export const CHANGE_PASSWORD_MUTATION = gql`
     }
   }
   `;  
+
+export const DELETE_TICKET_MUTATION = gql`
+  mutation DeleteTicket($id: Int!) {
+    deleteTicket(id: $id) {
+        success
+        message
+    }
+  }
+  `;  

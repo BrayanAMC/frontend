@@ -16,8 +16,8 @@ interface Ticket {
     subject: string;
     description: string;
     status: TicketStatus;
-    createdAt: Date;
-    closedAt: Date | null;
+    createdAt: string;
+    closedAt: string | null;
     userId: number;
     assignedToId: number | null;
 }
@@ -47,7 +47,7 @@ function TicketPages() {
             setUserId(userId);
         }
     }, []);
-    console.log("userId: ",userId);
+    //console.log("userId: ",userId);
 
     //let userId = null;
     
@@ -58,15 +58,15 @@ function TicketPages() {
         variables: { userId: userId },
         skip: userId === null
     });
-    console.log("imprimiendo data: ", data);
-    console.log("despues de llamar a la query", userId)
+    //console.log("imprimiendo data: ", data);
+    //console.log("despues de llamar a la query", userId)
     
     
     const tickets = data?.getTicketsByUserId || [];
 
 
 
-    console.log("imprimmiendo tickets: ", tickets);
+    //console.log("imprimmiendo tickets: ", tickets);
 
     return (
         <div>

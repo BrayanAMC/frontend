@@ -6,6 +6,9 @@ export const GET_TICKETS_BY_USER_ID_QUERY = gql`
         id
         subject
         description
+        status
+        createdAt
+        closedAt
         userId
        
         }
