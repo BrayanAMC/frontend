@@ -54,7 +54,7 @@ function TicketPages() {
 
     
     
-    const { loading, error, data } = useQuery(GET_TICKETS_BY_USER_ID_QUERY, {
+    const { loading, error, data, refetch } = useQuery(GET_TICKETS_BY_USER_ID_QUERY, {
         variables: { userId: userId },
         skip: userId === null
     });
@@ -64,7 +64,12 @@ function TicketPages() {
     
     const tickets = data?.getTicketsByUserId || [];
 
-
+    // Refetch tickets each time the component is rendered
+    useEffect(() => {
+        if (userId !== null) {
+            refetch();
+        }
+    }, [userId, refetch]);
 
     //console.log("imprimmiendo tickets: ", tickets);
 

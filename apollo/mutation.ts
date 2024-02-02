@@ -41,13 +41,28 @@ export const CHANGE_PASSWORD_MUTATION = gql`
         message
     }
   }
-  `;  
+  `;
 
 export const DELETE_TICKET_MUTATION = gql`
   mutation DeleteTicket($id: Int!) {
     deleteTicket(id: $id) {
         success
         message
+    }
+  }
+  `;
+
+export const CREATE_TICKET_MUTATION = gql`
+  mutation CreateTicket($createTicketInput: CreateTicketInput!) {
+    createTicket(CreateTicketInput: $createTicketInput) {
+        id
+        subject
+        description
+        status
+        createdAt
+        closedAt
+        userId
+        assignedToId
     }
   }
   `;  

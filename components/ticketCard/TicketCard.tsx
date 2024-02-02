@@ -1,5 +1,7 @@
 'use client'
 import Link from "next/link";
+import ticketImage from '@/img/ticket.png'
+import Image from "next/image";
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -21,19 +23,30 @@ interface Ticket {
 // RCC
 function TicketCard({ ticket }: { ticket: Ticket }) {
     return (
-        <div>
-            <Link href={{pathname:`/dashboard/tickets/${ticket.id}`, query: {
-                subject: ticket.subject, 
-                description: ticket.description,
-                status: ticket.status,
-                createdAt: ticket.createdAt} }}>
-                <h3>
-                    {ticket.id}. {ticket.subject}
-                </h3>
-            </Link>
-           
-
+        <div className="m-6 flex justify-center">
+            <Link href={{
+                pathname: `/dashboard/tickets/${ticket.id}`, query: {
+                    subject: ticket.subject,
+                    description: ticket.description,
+                    status: ticket.status,
+                    createdAt: ticket.createdAt
+                }
+            }}
+                className="max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+                <div className="md:flex">
+                    <div className="md:flex-shrink-0">
+                        <Image className="h-48 w-full object-cover md:w-48" src={ticketImage} alt="ticket" />
         </div>
-    )
+                    <div className="p-8">
+                        <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Ticket #{ticket.id}</div>
+                        <p className="block mt-1 text-lg leading-tight font-medium text-black">{ticket.subject}</p>
+                        <p className="mt-2 text-gray-500">{ticket.description}</p>
+                        <p className="mt-2 text-gray-500">Status: {ticket.status}</p>
+                        <p className="mt-2 text-gray-500">Created At: {new Date(ticket.createdAt).toLocaleDateString()}</p>
+                    </div>
+                </div>
+            </Link>
+        </div>
+    );
 }
 export default TicketCard;
