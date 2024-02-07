@@ -77,10 +77,29 @@ export default function LoginForm() {
             localStorage.setItem('emailUser', data.login.email);
             localStorage.setItem('firstNameUser', data.login.firstName);
             localStorage.setItem('lastNameUser', data.login.lastName);
+            localStorage.setItem('userRole', data.login.role);
             localStorage.setItem('isUserLoggedIn', 'true');
-            localStorage.setItem('isAdmin', 'false');
+            //localStorage.setItem('isAdmin', 'false');
             localStorage.removeItem("cart");
-            window.location.href = "/dashboard";
+            if(data.login.role === "superadmin")
+            {
+              //localStorage.setItem('isSuperAdmin', 'true');
+              //localStorage.setItem('isAdmin', 'false');
+              window.location.href = "/superUser/dashboard"
+            }
+            if(data.login.role === "admin")
+            {
+              //localStorage.setItem('isAdmin', 'true');
+              //localStorage.setItem('isSuperAdmin', 'false');
+              window.location.href = "/admin/dashboard"
+            }
+            if(data.login.role === "user")
+            {
+              //localStorage.setItem('isAdmin', 'false');
+              //localStorage.setItem('isSuperAdmin', 'false');
+              window.location.href = "/dashboard"
+            }
+            //window.location.href = "/dashboard";
           } else {
             setError("Credenciales inválidas.");
             setShowAlert(true);

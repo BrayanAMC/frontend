@@ -25,11 +25,12 @@ export const RegisterForm = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user");
   const [error, setError] = useState<string | null>(null);
   const [redirectCountdown, setRedirectCountdown] = useState(4);
 
   const [registerUser] = useMutation(REGISTER_USER_MUTATION, {
-    client, 
+    client,
   });
 
   useEffect(() => {
@@ -63,6 +64,7 @@ export const RegisterForm = () => {
         lastName,
         email,
         password,
+        role,
       };
       console.log("before calling the api")
       const { data } = await registerUser({
@@ -116,6 +118,7 @@ export const RegisterForm = () => {
             type="email"
           />
         </div>
+        
         <div className="grid w-full items-center gap-1.5">
           <Label htmlFor="password">Contraseña</Label>
           <Input
@@ -125,6 +128,18 @@ export const RegisterForm = () => {
             id="password"
             type="password"
           />
+        </div>
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="role">Rol</Label>
+          <select
+            required
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            id="role"
+          >
+            <option value="user">Usuario</option>
+            <option value="admin">Administrador</option>
+          </select>
         </div>
         <div className="w-full">
           <Button type="submit" className="w-full" size="lg">

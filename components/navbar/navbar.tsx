@@ -55,7 +55,7 @@ export default function Navbar() {
 
   return (
     <div className='p-4 flex justify-between items-center'>
-      <Link href="/">D.A.E.A App</Link>
+      <Link href="/">D.A.E.M App</Link>
 
       <div className='flex'>
         {isUserLoggedIn ? (

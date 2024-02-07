@@ -8,6 +8,7 @@ export const LOGIN_USER_MUTATION = gql`
         lastName
         email
         accessToken
+        role
     }
   }
 `;
@@ -21,6 +22,7 @@ export const REGISTER_USER_MUTATION = gql`
         email
         accessToken
         recoveryPasswordToken
+        role
     }
   }
   `;
@@ -66,3 +68,16 @@ export const CREATE_TICKET_MUTATION = gql`
     }
   }
   `;  
+
+  export const CREATE_INSTITUTION_MUTATION = gql`
+  mutation CreateInstitution($createInstitutionInput: CreateInstitutionInput!) {
+    createInstitution(CreateInstitutionInput: $createInstitutionInput) {
+        id
+        name
+        email
+        phoneNumber
+        
+        
+    }
+  }
+  `;
