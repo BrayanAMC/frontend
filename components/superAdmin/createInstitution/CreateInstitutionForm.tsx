@@ -68,6 +68,7 @@ function CreateInstitutionForm(){
                             onChange={(e) => setName(e.target.value)}
                             id="name"
                             type="text"
+                            maxLength={50}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         />
                     </div>
@@ -79,6 +80,7 @@ function CreateInstitutionForm(){
                             onChange={(e) => setEmail(e.target.value)}
                             id="email"
                             type="email"
+                            maxLength={50}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         />
                     </div>
@@ -90,6 +92,7 @@ function CreateInstitutionForm(){
                             onChange={(e) => setPhone(e.target.value)}
                             id="phoneNumber"
                             type="text"
+                            maxLength={15}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         />
                     </div>

@@ -9,6 +9,7 @@ export const LOGIN_USER_MUTATION = gql`
         email
         accessToken
         role
+        institutionId
     }
   }
 `;
@@ -23,6 +24,7 @@ export const REGISTER_USER_MUTATION = gql`
         accessToken
         recoveryPasswordToken
         role
+        institutionId
     }
   }
   `;
@@ -64,6 +66,7 @@ export const CREATE_TICKET_MUTATION = gql`
         createdAt
         closedAt
         userId
+        institutionId
         assignedToId
     }
   }
@@ -78,6 +81,24 @@ export const CREATE_TICKET_MUTATION = gql`
         phoneNumber
         
         
+    }
+  }
+  `;
+
+  export const DELETE_INSTITUTION_MUTATION = gql`
+  mutation DeleteInstitution($id: Int!) {
+    deleteInstitution(id: $id) {
+        success
+        message
+    }
+  }
+  `;
+
+export const DELETE_USER_MUTATION = gql`
+  mutation DeleteUser($deleteUserInput: DeleteUserInput!) {
+    deleteUser(DeleteUserInput: $deleteUserInput) {
+        success
+        message
     }
   }
   `;

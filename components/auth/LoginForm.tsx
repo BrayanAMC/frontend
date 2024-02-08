@@ -79,6 +79,7 @@ export default function LoginForm() {
             localStorage.setItem('lastNameUser', data.login.lastName);
             localStorage.setItem('userRole', data.login.role);
             localStorage.setItem('isUserLoggedIn', 'true');
+            localStorage.setItem('institutionId', data.login.institutionId)
             //localStorage.setItem('isAdmin', 'false');
             localStorage.removeItem("cart");
             if(data.login.role === "superadmin")

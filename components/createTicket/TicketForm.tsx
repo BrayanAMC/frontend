@@ -10,6 +10,7 @@ function TicketForm() {
     const [subject, setSubject] = useState('');
     const [description, setDescription] = useState('');
     const [userId, setUserId] = useState<number | null>(null);
+    const [institutionId, setInstitutionId] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showAlert, setShowAlert] = useState(false);
 
@@ -23,7 +24,7 @@ function TicketForm() {
         cache: new InMemoryCache(),
     });
 
-    const [registerUser] = useMutation(CREATE_TICKET_MUTATION, {
+    const [registerTicket] = useMutation(CREATE_TICKET_MUTATION, {
         client,
     });
 
@@ -31,8 +32,11 @@ function TicketForm() {
         if (typeof window !== 'undefined') {
             const userIdString = localStorage.getItem('idUser');
             const userIdInt = userIdString ? parseInt(userIdString) : null;
+            const institutionId = localStorage.getItem('institutionId');
+            const institutionIdInt = institutionId ? parseInt(institutionId) : null;
             setUserId(userIdInt);
-        }
+            setInstitutionId(institutionIdInt);
+        }   
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -46,9 +50,10 @@ function TicketForm() {
             const input = {
                 subject,
                 description,
-                userId
+                userId,
+                institutionId
             };
-            const { data } = await registerUser({
+            const { data } = await registerTicket({
                 variables: { createTicketInput: input }
             });
 

@@ -72,7 +72,8 @@ function TicketPages() {
     }, [userId, refetch]);
 
     //console.log("imprimmiendo tickets: ", tickets);
-
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error</p>;
     return (
         <div>
             {tickets.length === 0 ? (

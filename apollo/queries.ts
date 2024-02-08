@@ -14,3 +14,31 @@ export const GET_TICKETS_BY_USER_ID_QUERY = gql`
         }
     }
     `;
+
+export const GET_INSTITUTIONS_QUERY = gql`
+    query GetInstitutions {
+        institutions{
+            id
+            name
+            email
+            phoneNumber
+        }
+    }
+    `;
+
+export const GET_USERS_QUERY = gql`
+    query GetUsers {
+        users{
+            id
+            firstName
+            lastName
+            email
+            password
+            accessToken
+            recoveryPasswordToken
+            role
+            institutionId
+        }
+    }
+    `;
+

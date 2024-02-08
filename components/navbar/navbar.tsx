@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 
 export default function Navbar() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState('');
   //const [isUserLoggedIn, setIsUserLoggedIn] = useState(localStorage.getItem('isUserLoggedIn') === 'true');
 
   /*const [isUserLoggedIn, setIsUserLoggedIn] = useState(
@@ -14,6 +15,7 @@ export default function Navbar() {
 
   useEffect(() => {
     setIsUserLoggedIn(localStorage.getItem('isUserLoggedIn') === 'true');
+    setUserRole(localStorage.getItem('userRole') || '');
   }, []);
 
   /*useEffect(() => {
@@ -53,6 +55,16 @@ export default function Navbar() {
     }
   };*/
 
+  const getDashboardLink = () => {
+    switch (userRole) {
+      case 'superadmin':
+        return '/superUser/dashboard';
+      case 'admin':
+        return '/admin/dashboard';
+      default:
+        return '/dashboard';
+    }
+  }
   return (
     <div className='p-4 flex justify-between items-center'>
       <Link href="/">D.A.E.M App</Link>
@@ -60,6 +72,9 @@ export default function Navbar() {
       <div className='flex'>
         {isUserLoggedIn ? (
           <>
+            <Link href={getDashboardLink()} className='mr-4'>
+              <h1>Dashboard</h1>
+            </Link>
             <Link href="/myaccount" className='mr-4'>
               <h1>My Account</h1>
             </Link>

@@ -4,10 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
-import { ApolloClient, InMemoryCache, createHttpLink, gql, useMutation } from "@apollo/client";
+import { ApolloClient, InMemoryCache, createHttpLink, gql, useMutation, useQuery, ApolloProvider } from "@apollo/client";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alertshad";
 import { useRouter } from "next/navigation";
 import { REGISTER_USER_MUTATION } from "@/apollo/mutation";
+import { GET_INSTITUTIONS_QUERY } from "@/apollo/queries";
+import exp from "constants";
+
+
+interface Institution {
+  id: number;
+  name: string;
+  email: string;
+  phoneNumber: string;
+
+}
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:3002/graphql',
@@ -18,7 +29,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export const RegisterForm = () => {
+function RegisterForm() {
   const router = useRouter();
   const [showAlert, setShowAlert] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -26,7 +37,8 @@ export const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
-  const [error, setError] = useState<string | null>(null);
+  const [institution, setInstitution] = useState("");
+  const [error2, setError] = useState<string | null>(null);
   const [redirectCountdown, setRedirectCountdown] = useState(4);
 
   const [registerUser] = useMutation(REGISTER_USER_MUTATION, {
@@ -45,9 +57,16 @@ export const RegisterForm = () => {
       };
     } else if (showAlert && redirectCountdown === 0) {
       // Redirect when countdown reaches 0
-      router.push("/auth/login");
+      router.push("/superUser/dashboard");
     }
   }, [showAlert, redirectCountdown, router]);
+
+  const { loading, error, data } = useQuery(GET_INSTITUTIONS_QUERY)
+  console.log("data: ", data);
+
+
+
+
 
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -58,6 +77,7 @@ export const RegisterForm = () => {
       return;
     }
     try {
+      const institutionId = parseInt(institution);
       console.log("Entering the try block");
       const input = {
         firstName,
@@ -65,12 +85,15 @@ export const RegisterForm = () => {
         email,
         password,
         role,
+        institutionId
       };
       console.log("before calling the api")
-      const { data } = await registerUser({
+      console.log("institution before calling the api: ", institution)
+      const { data, errors } = await registerUser({
         variables: { createUserInput: input },
       });
       console.log("datos de la api: ", data);
+      console.log("errores de la api: ", errors);
 
       if (data && data.createUser) {
         setShowAlert(true);
@@ -118,7 +141,7 @@ export const RegisterForm = () => {
             type="email"
           />
         </div>
-        
+
         <div className="grid w-full items-center gap-1.5">
           <Label htmlFor="password">Contraseña</Label>
           <Input
@@ -141,6 +164,27 @@ export const RegisterForm = () => {
             <option value="admin">Administrador</option>
           </select>
         </div>
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="institution">Institución</Label>
+          <select
+            required
+            value={institution}
+            onChange={(e) => setInstitution(e.target.value)}
+            id="institution"
+          >
+            {loading ? (
+              <option>Cargando...</option>
+            ) : error ? (
+              <option>Error</option>
+            ) : (
+              data.institutions.map((institution: Institution) => (
+                <option key={institution.id} value={institution.id}>
+                  {institution.name}
+                </option>
+              ))
+            )}
+          </select>
+        </div>
         <div className="w-full">
           <Button type="submit" className="w-full" size="lg">
             Registrarse
@@ -150,10 +194,10 @@ export const RegisterForm = () => {
       </form>
       {showAlert && (
         <Alert variant="default">
-          {error ? (
+          {error2 ? (
             <>
               <AlertTitle style={{ color: 'red' }}>Error</AlertTitle>
-              <AlertDescription style={{ color: 'red' }}>{error}</AlertDescription>
+              <AlertDescription style={{ color: 'red' }}>{error2}</AlertDescription>
             </>
           ) : (
             <>
@@ -167,7 +211,7 @@ export const RegisterForm = () => {
         </Alert>
 
       )}
-      {error === null && redirectCountdown < 4 && (
+      {error2 === null && redirectCountdown < 4 && (
         <div className="redirectionBox">
           <p>Serás redirigido a la página de login en {redirectCountdown} segundos.</p>
         </div>
@@ -175,4 +219,8 @@ export const RegisterForm = () => {
     </div>
 
   );
-};
+} export default () => (
+  <ApolloProvider client={client}>
+    <RegisterForm />
+  </ApolloProvider>
+);
