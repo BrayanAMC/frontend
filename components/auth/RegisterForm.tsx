@@ -61,7 +61,14 @@ function RegisterForm() {
     }
   }, [showAlert, redirectCountdown, router]);
 
-  const { loading, error, data } = useQuery(GET_INSTITUTIONS_QUERY)
+  const { loading, error, data } = useQuery(GET_INSTITUTIONS_QUERY, {
+    onCompleted: (data) => {
+      // Set the initial institution value to the ID of the first institution
+      if (data.institutions.length > 0) {
+        setInstitution(data.institutions[0].id.toString());
+      }
+    },
+  });
   console.log("data: ", data);
 
 
@@ -78,6 +85,7 @@ function RegisterForm() {
     }
     try {
       const institutionId = parseInt(institution);
+      console.log("institutionId: ", institutionId)
       console.log("Entering the try block");
       const input = {
         firstName,
