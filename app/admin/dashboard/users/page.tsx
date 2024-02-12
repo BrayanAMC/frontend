@@ -16,11 +16,6 @@ interface User {
     institutionId?: number;
 }
 
-interface UserCardProps {
-    user: User;
-    path: string;
-}
-
 const httpLink = createHttpLink({
     uri: 'http://localhost:3002/graphql',
 });
@@ -50,7 +45,7 @@ function UsersPage() {
                 <p>No usuarios aún .</p>
             ) : (
                 Users.map((user: User) => (
-                    <UserCard user={user} path= "/superUser/dashboard/users" key={user.id} />
+                    <UserCard user={user} path="/admin/dashboard/users" key={user.id} />
                 ))
             )}
         </div>

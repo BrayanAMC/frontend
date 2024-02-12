@@ -14,12 +14,17 @@ interface User {
     institutionId?: number;
 }
 
-function UserCard({user}: {user: User}){
+interface UserCardProps {
+    user: User;
+    path: string;
+}
+
+function UserCard({user, path}: UserCardProps){
     return(
         <div className="m-6 flex justify-center">
             <Link href={{
                 //envio a ruta dinamica
-                pathname: `/superUser/dashboard/users/${user.id}`, query: {
+                pathname: `${path}/${user.id}`, query: {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,

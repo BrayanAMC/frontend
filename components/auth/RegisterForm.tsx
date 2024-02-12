@@ -84,17 +84,19 @@ function RegisterForm() {
       return;
     }
     try {
-      const institutionId = parseInt(institution);
-      console.log("institutionId: ", institutionId)
+      //const institutionId = parseInt(institution);
+      //console.log("institutionId: ", institutionId)
       console.log("Entering the try block");
-      const input = {
+      let input: { firstName: string; lastName: string; email: string; password: string; role: string; institutionId?: number } = {
         firstName,
         lastName,
         email,
         password,
         role,
-        institutionId
       };
+      if (role === "user") {
+        input.institutionId = parseInt(institution);
+      }
       console.log("before calling the api")
       console.log("institution before calling the api: ", institution)
       const { data, errors } = await registerUser({
@@ -172,27 +174,29 @@ function RegisterForm() {
             <option value="admin">Administrador</option>
           </select>
         </div>
-        <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="institution">Institución</Label>
-          <select
-            required
-            value={institution}
-            onChange={(e) => setInstitution(e.target.value)}
-            id="institution"
-          >
-            {loading ? (
-              <option>Cargando...</option>
-            ) : error ? (
-              <option>Error</option>
-            ) : (
-              data.institutions.map((institution: Institution) => (
-                <option key={institution.id} value={institution.id}>
-                  {institution.name}
-                </option>
-              ))
-            )}
-          </select>
-        </div>
+        {role === "user" && (
+  <div className="grid w-full items-center gap-1.5">
+    <Label htmlFor="institution">Institución</Label>
+    <select
+      required
+      value={institution}
+      onChange={(e) => setInstitution(e.target.value)}
+      id="institution"
+    >
+      {loading ? (
+        <option>Cargando...</option>
+      ) : error ? (
+        <option>Error</option>
+      ) : (
+        data.institutions.map((institution: Institution) => (
+          <option key={institution.id} value={institution.id}>
+            {institution.name}
+          </option>
+        ))
+      )}
+    </select>
+  </div>
+)}
         <div className="w-full">
           <Button type="submit" className="w-full" size="lg">
             Registrarse
