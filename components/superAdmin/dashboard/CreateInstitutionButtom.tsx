@@ -1,13 +1,16 @@
 
 import Link from 'next/link';
 
-function CreateInstitutionButtom() {
+interface CreateInstitutionButtomProps {
+  href: string;
+}
 
-    return (
-        <Link href="/superUser/dashboard/createInstitution">
-          <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">crear institucion</button>
-        </Link>
-      );
+const CreateInstitutionButtom: React.FC<CreateInstitutionButtomProps> = ({ href }) => {
+  return (
+      <Link href={href}>
+        <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">crear institucion</button>
+      </Link>
+    );
 }
 
 export default CreateInstitutionButtom 

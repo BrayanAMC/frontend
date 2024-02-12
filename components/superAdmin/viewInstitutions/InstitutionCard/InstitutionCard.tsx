@@ -11,12 +11,16 @@ interface Institution {
 
 }
 
-function InstitutionCard({ institution }: { institution: Institution }) {
+interface InstitutionCardProps {
+    institution: Institution;
+    path: string;
+}
+function InstitutionCard({ institution, path }: InstitutionCardProps) {
     return (
         <div className="m-6 flex justify-center">
             <Link href={{
                 //envio a ruta dinamica
-                pathname: `/superUser/dashboard/institutions/${institution.id}`, query: {
+                pathname: `${path}/${institution.id}`, query: {
                     name: institution.name,
                     email: institution.email,
                     phoneNumber: institution.phoneNumber

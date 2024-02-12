@@ -11,7 +11,7 @@ export default function Dashboard() {
         
         <CreateUserButtom/>
         <ViewUsersButtom/>
-        <CreateInstitutionButtom/>
+        <CreateInstitutionButtom href="/superUser/dashboard/createInstitution"/>
         <ViewInstitutionsButton/>
         </div>
 
