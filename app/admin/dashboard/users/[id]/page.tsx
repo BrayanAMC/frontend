@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from 'next/router';
 import { useSearchParams, useParams } from "next/navigation";
 import {
   ApolloClient,
@@ -10,6 +11,7 @@ import { DELETE_USER_MUTATION } from "@/apollo/mutation";
 import { UPDATE_USER_MUTATION } from "@/apollo/mutation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import Link from 'next/link';
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3002/graphql",
@@ -21,6 +23,7 @@ const client = new ApolloClient({
 });
 
 function UserPage() {
+  
   const { id } = useParams();
   const sorted = useSearchParams();
   const [firstName, setFirstName] = useState(sorted.get("firstName"));
@@ -75,6 +78,10 @@ function UserPage() {
     }
   };
 
+  const handleViewTickets = () => {
+    window.location.href = "/admin/tickets/${id}";
+  };
+
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 ">
       <div className="relative p-8 bg-white rounded shadow-md w-1/2 mt-12">
@@ -120,6 +127,14 @@ function UserPage() {
               <i className="material-icons">edit</i>
             </button>
           </div>
+          <div className="mb-10">
+          <Link href={`/admin/tickets/${id}`}>
+            <button className="absolute bottom-0 right-0 mb-4 mr-28 p-2 bg-green-500 text-white rounded-full">
+              Ver Tickets
+            </button>
+          </Link>
+          {/* ... */}
+        </div>
         </div>
       </div>
     </div>

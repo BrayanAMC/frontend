@@ -2,6 +2,7 @@ import CreateInstitutionButtom from "@/components/superAdmin/dashboard/CreateIns
 import CreateUserButtom from "@/components/superAdmin/dashboard/CreateUserButtom";
 import ViewInstitutionsButton from "@/components/superAdmin/dashboard/ViewInstitutionsButtom";
 import ViewUsersButtom from "@/components/superAdmin/dashboard/ViewUsersButtom";
+import ViewTicketsButton from "@/components/dashboard/ViewTicketsButton"
 
 
 export default function Dashboard() {
@@ -13,6 +14,7 @@ export default function Dashboard() {
         <ViewUsersButtom/>
         <CreateInstitutionButtom href="/admin/dashboard/createInstitution"/>
         <ViewInstitutionsButton/>
+        <ViewTicketsButton />
         </div>
 
       </div>

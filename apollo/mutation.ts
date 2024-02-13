@@ -122,3 +122,18 @@ export const UPDATE_USER_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_TICKET_MUTATION = gql`  
+  mutation UpdateTicket($updateTicketInput: UpdateTicketInput!) {
+    updateTicket(UpdateTicketInput: $updateTicketInput) {
+      id
+      subject
+      description
+      status
+      createdAt
+      closedAt
+      userId
+      assignedToId
+    }
+  }
+`;

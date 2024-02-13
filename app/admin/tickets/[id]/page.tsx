@@ -4,6 +4,7 @@ import TicketCard from "@/components/ticketCard/TicketCard";
 import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider } from "@apollo/client"
 import { gql } from "@apollo/client";
 import { useState, useEffect } from 'react';
+import { useSearchParams, useParams, ReadonlyURLSearchParams } from 'next/navigation';
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -37,16 +38,18 @@ function TicketPages() {
     //const userIdString = localStorage.getItem('idUser');
     //const userId = userIdString ? parseInt(userIdString) : 0;
     //const [userId, setUserId] = useState(0);
+    const { id }  = useParams();
+    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
     const [userId, setUserId] = useState<number | null>(null);
     //console.log("userId: ",userId);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (typeof window !== 'undefined') {
             const userIdString = localStorage.getItem('idUser');
             const userId = userIdString ? parseInt(userIdString) : null;
             setUserId(userId);
         }
-    }, []);
+    }, []);*/
     //console.log("userId: ",userId);
 
     //let userId = null;
@@ -55,8 +58,8 @@ function TicketPages() {
     
     
     const { loading, error, data, refetch } = useQuery(GET_TICKETS_BY_USER_ID_QUERY, {
-        variables: { userId: userId },
-        skip: userId === null
+        variables: { userId: idNumber },
+        skip: idNumber === null
     });
     //console.log("imprimiendo data: ", data);
     //console.log("despues de llamar a la query", userId)
@@ -80,7 +83,7 @@ function TicketPages() {
                 <p>Usted no tiene tickets aún.</p>
             ) : (
                 tickets.map((ticket: Ticket) => (
-                    <TicketCard ticket={ticket} path= "/dashboard/tickets"key={ticket.id}/>
+                    <TicketCard ticket={ticket} path= "/admin/tickets/ticket"key={ticket.id}/>
                 ))
             )}
         </div>

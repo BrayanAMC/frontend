@@ -20,12 +20,17 @@ interface Ticket {
     assignedToId: number | null;
 }
 
+interface TicketCardProps {
+    ticket: Ticket;
+    path : string;
+}
+
 // RCC
-function TicketCard({ ticket }: { ticket: Ticket }) {
+function TicketCard({ ticket, path }: TicketCardProps) {
     return (
         <div className="m-6 flex justify-center">
             <Link href={{
-                pathname: `/dashboard/tickets/${ticket.id}`, query: {
+                pathname: `${path}/${ticket.id}`, query: {
                     subject: ticket.subject,
                     description: ticket.description,
                     status: ticket.status,
