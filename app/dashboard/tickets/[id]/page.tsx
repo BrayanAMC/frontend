@@ -20,6 +20,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, useMutation } from "@apoll
 import { DELETE_TICKET_MUTATION, UPDATE_TICKET_MUTATION } from "@/apollo/mutation";
 import { parse } from 'path';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:3002/graphql',
@@ -116,12 +117,12 @@ function TicketPage() {
   //await loadTicket(params.ticketId);
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 ">
-      <div className=" relative p-8 bg-white rounded shadow-md w-1/2 mt-12">
+    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 " >
+      <div className=" relative p-8 bg-white rounded shadow-md w-1/2 mt-12" >
         <h1 className="text-2xl font-bold mb-4">{firstNameUser} {lastNameUser}</h1>
         <p className="mb-4">{emailUser}</p>
-        <h2 className="text-xl font-semibold mb-2">{subject}</h2>
-        <p className="mb-4">{description}</p>
+        <h2 className="text-xl font-semibold mb-2 break-words overflow-auto">{subject}</h2>
+        <p className="mb-4 break-words overflow-auto">{description}</p>
         <p className="mb-4">{createdAt}</p>
 
         <span className={`inline-block px-3 py-1 rounded text-white ${status === 'OPEN' ? 'bg-green-500' :
@@ -145,14 +146,34 @@ function TicketPage() {
         )}
         <></>
         <div className="mb-6">
+        <Label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Subject
+            </Label>
           <Input 
             value={subject || ""} 
-            onChange={(e) => setSubject(e.target.value)} />
+            onChange={(e) => setSubject(e.target.value)} 
+            disabled={status === 'IN_PROGRESS' || status === 'CLOSED'}
+            maxLength={100} // Limita la entrada a 100 caracteres
+          />
+            
         </div>
-        <div className="mb-6">
-          <Input
+        <div className="mb-6" >
+        <Label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Description
+            </Label>
+          <textarea
+            className='w-full'
             value={description || ""}
             onChange={(e) => setDescription(e.target.value)}
+            disabled={status === 'IN_PROGRESS' || status === 'CLOSED'}
+            rows={5} // Ajusta esto para cambiar la altura
+            maxLength={300} // Limita la entrada a 500 caracteres
           />
         </div>
         

@@ -163,8 +163,8 @@ function TicketPage() {
           {firstNameUser} {lastNameUser}
         </h1>
         <p className="mb-4">{emailUser}</p>
-        <h2 className="text-xl font-semibold mb-2">{subject}</h2>
-        <p className="mb-4">{description}</p>
+        <h2 className="text-xl font-semibold mb-2 break-words overflow-auto">{subject}</h2>
+        <p className="mb-4 break-words overflow-auto">{description}</p>
         <p className="mb-4">{createdAt}</p>
 
         <span
@@ -182,6 +182,7 @@ function TicketPage() {
         </span>
         {status !== "IN_PROGRESS" && (
           <button
+          style={{ display: 'none' }}
             className="absolute bottom-0 right-0 mb-4 mr-4 p-2 bg-red-500 text-white rounded-full"
             onClick={(e) => {
               if (status !== "IN_PROGRESS") {
@@ -195,7 +196,7 @@ function TicketPage() {
           </button>
         )}
         <></>
-        <div className="mb-6">
+        {/*<div className="mb-6">
           <Input
             value={subject || ""}
             onChange={(e) => setSubject(e.target.value)}
@@ -206,10 +207,11 @@ function TicketPage() {
             value={description || ""}
             onChange={(e) => setDescription(e.target.value)}
           />
-        </div>
+          </div>*/}
 
         <div className="mb-10">
           <button
+            style={{ display: 'none' }}
             className="absolute bottom-0 right-0 mb-4 mr-4 p-2 bg-red-500 text-white rounded-full"
             onClick={(e) => {
               if (status !== "IN_PROGRESS") {
@@ -225,6 +227,7 @@ function TicketPage() {
         </div>
         <div className="mb-10">
           <button
+            style={{ display: 'none' }}
             className="absolute bottom-0 right-0 mb-4 mr-16 p-2 bg-blue-500 text-white rounded-full"
             onClick={(e) => {
               if (status === "OPEN") {
@@ -242,7 +245,7 @@ function TicketPage() {
         <div className="mb-10">
           {status === "OPEN" ? (
             <button
-              className="absolute bottom-0 right-0 mb-4 mr-28 p-2 bg-yellow-500 text-white rounded-full"
+              className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-yellow-500 text-white rounded-full"
               onClick={(e) => {
                 if (
                   window.confirm(
@@ -258,7 +261,7 @@ function TicketPage() {
             </button>
           ) : status === "IN_PROGRESS" ? (
             <button
-              className="absolute bottom-0 right-0 mb-4 mr-28 p-2 bg-red-500 text-white rounded-full"
+              className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-red-500 text-white rounded-full"
               onClick={(e) => {
                 if (
                   window.confirm(
