@@ -39,7 +39,7 @@ function TicketPages() {
     //const userId = userIdString ? parseInt(userIdString) : 0;
     //const [userId, setUserId] = useState(0);
     const { id }  = useParams();
-    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del usuario dueño del ticket
     const [userId, setUserId] = useState<number | null>(null);
     //console.log("userId: ",userId);
 
@@ -69,7 +69,7 @@ function TicketPages() {
 
     // Refetch tickets each time the component is rendered
     useEffect(() => {
-        if (userId !== null) {
+        if (idNumber !== null) {
             refetch();
         }
     }, [userId, refetch]);

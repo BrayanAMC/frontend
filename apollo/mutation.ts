@@ -137,3 +137,12 @@ export const UPDATE_TICKET_MUTATION = gql`
     }
   }
 `;
+
+export const CHANGE_STATUS_TO_IN_PROGRESS_MUTATION = gql`
+  mutation ChangeStatusToInProgress($id: Int!, $userId: Int!, $assignedToId: Int!) {
+    changeStatusToInProgress(id: $id, userId: $userId, assignedToId: $assignedToId) {
+      success
+      message
+    }
+  }
+`;
