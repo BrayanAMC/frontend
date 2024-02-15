@@ -89,7 +89,7 @@ function UserPage() {
           {firstName} {lastName}
         </h1>
         <h2 className="mb-4">{email}</h2>
-        <h2 className="mb-4">{role}</h2>
+        {/*<h2 className="mb-4">{role}</h2>*/}
         <></>
         <div className="mb-6">
           <Input

@@ -146,3 +146,12 @@ export const CHANGE_STATUS_TO_IN_PROGRESS_MUTATION = gql`
     }
   }
 `;
+
+export const CHANGE_STATUS_TO_CLOSED_MUTATION = gql`
+  mutation ChangeStatusToClosed($id: Int!, $userId: Int!, $assignedToId: Int!) {
+    changeStatusToClosed(id: $id, userId: $userId, assignedToId: $assignedToId) {
+      success
+      message
+    }
+  }
+`;

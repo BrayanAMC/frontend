@@ -27,12 +27,14 @@ import {
   useMutation,
 } from "@apollo/client";
 import {
+  CHANGE_STATUS_TO_CLOSED_MUTATION,
   CHANGE_STATUS_TO_IN_PROGRESS_MUTATION,
   DELETE_TICKET_MUTATION,
   UPDATE_TICKET_MUTATION,
 } from "@/apollo/mutation";
 import { parse } from "path";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3002/graphql",
@@ -85,6 +87,11 @@ function TicketPage() {
   const [changeStatusToInProgress] = useMutation(CHANGE_STATUS_TO_IN_PROGRESS_MUTATION, {
     client,
   });
+
+  const [changeStatusToClosed] = useMutation(CHANGE_STATUS_TO_CLOSED_MUTATION, {
+    client,
+  });
+  
 
   const handleDeleteTicket = async (e: React.FormEvent) => {
     if (status === "OPEN" || status === "CLOSED") {
@@ -151,6 +158,30 @@ function TicketPage() {
 
   const handleClosed = async (e: React.FormEvent) => {
     console.log("en funcion handleClosed");
+    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+    const userIdNumber = parseInt(Array.isArray(userId) ? userId[0] : userId, 10);
+    const adminUserIdNumber = parseInt(Array.isArray(adminUserId) ? adminUserId[0] : adminUserId, 10);
+    if (isNaN(adminUserIdNumber)) {
+      // Handle the case where adminUserId is null
+      alert("Admin user ID is not set.");
+      return;
+    }
+    const { data } = await changeStatusToClosed({
+      variables: {
+        id: idNumber,
+        userId: userIdNumber,
+        assignedToId: adminUserIdNumber,
+      },
+    });
+    console.log("data changeStatusToClosed ", data);
+    if (data?.changeStatusToClosed.success) {
+      alert("Ticket updated successfully");
+      window.location.href = `/admin/tickets/${userId}`;
+    }
+  }
+  
+  const handleUploadReport = async (e: React.FormEvent) => {
+    console.log("en funcion handleUploadReport");
   }
   //const { subject } = useParams();
 
@@ -159,12 +190,13 @@ function TicketPage() {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 ">
       <div className=" relative p-8 bg-white rounded shadow-md w-1/2 mt-12">
-        <h1 className="text-2xl font-bold mb-4">
-          {firstNameUser} {lastNameUser}
-        </h1>
-        <p className="mb-4">{emailUser}</p>
+        
+        <Label>Subject</Label>
         <h2 className="text-xl font-semibold mb-2 break-words overflow-auto">{subject}</h2>
+        <hr className="my-4 border-gray-200" /> 
+        <Label>Description</Label>
         <p className="mb-4 break-words overflow-auto">{description}</p>
+        <hr className="my-4 border-gray-200" /> 
         <p className="mb-4">{createdAt}</p>
 
         <span
@@ -275,7 +307,19 @@ function TicketPage() {
             >
               Cambiar estado a CLOSED
             </button>
-          ) : null}
+          ) : status === "CLOSED" ? (
+            <button
+              className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full"
+              onClick={(e) => {
+                handleUploadReport(e);
+                
+              }}
+              disabled={!subject || !description || !status || !createdAt} >
+              Subir reporte
+            </button>
+
+          ): null}
+        
         </div>
       </div>
     </div>
