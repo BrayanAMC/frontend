@@ -155,3 +155,21 @@ export const CHANGE_STATUS_TO_CLOSED_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_REPORT_MUTATION = gql`
+mutation CreatePdf($createPdfInput: CreatePdfInput!) {
+  createPdf(CreatePdfInput: $createPdfInput) {
+    id
+    nombre
+    localidad
+    fecha
+    tipoDeVisita
+    problemaEncontrado
+    detalleProblema
+    trabajoRealizado
+    detalleTrabajo
+    observaciones
+    ticketId
+  }
+}
+`;
