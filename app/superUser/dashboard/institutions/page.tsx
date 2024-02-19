@@ -41,7 +41,7 @@ function InstitutionsPage(){
                 <p>aún no hay instituciones.</p>
             ) : (
                 Institutions.map((institution: Institution) => (
-                    <InstitutionCard institution={institution} path="superUser/dashboard/institutions" key={institution.id}/>
+                    <InstitutionCard institution={institution} path="institutions" key={institution.id}/>
                 ))
             )}
         </div>

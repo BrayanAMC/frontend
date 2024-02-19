@@ -21,23 +21,15 @@ import {
   ReadonlyURLSearchParams,
 } from "next/navigation";
 import { useState, useEffect } from "react";
-import {
-  ApolloClient,
-  InMemoryCache,
-  createHttpLink,
-  useMutation,
-} from "@apollo/client";
-import {
-  CHANGE_STATUS_TO_CLOSED_MUTATION,
-  CHANGE_STATUS_TO_IN_PROGRESS_MUTATION,
-  CREATE_REPORT_MUTATION,
-  DELETE_TICKET_MUTATION,
-  UPDATE_TICKET_MUTATION,
+import { ApolloClient, InMemoryCache, createHttpLink, useMutation, ApolloProvider, useQuery } from "@apollo/client";
+import { CHANGE_STATUS_TO_CLOSED_MUTATION, CHANGE_STATUS_TO_IN_PROGRESS_MUTATION, CREATE_REPORT_MUTATION, DELETE_TICKET_MUTATION, UPDATE_TICKET_MUTATION,
 } from "@/apollo/mutation";
+import { GET_REPORT_QUERY } from "@/apollo/queries";
 import { parse } from "path";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Modal from 'react-modal';
+import jsPDF from "jspdf";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3002/graphql",
@@ -49,6 +41,7 @@ const client = new ApolloClient({
 });
 
 function TicketPage() {
+  const { id } = useParams(); //id del ticket
   //if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#__next')
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -61,8 +54,15 @@ function TicketPage() {
       setFirstNameUser(firstNameUser);
       setLastNameUser(lastNameUser);
       setEmailUser(emailUser);
+
     }
   }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem(`reportCreatedForTicket${id}`)) {
+      setReportCreated(true);
+    }
+  }, [id]);
 
 
   //datos de entrada para el informe de visita tecnica
@@ -82,9 +82,10 @@ function TicketPage() {
   const [firstNameUser, setFirstNameUser] = useState<string | null>(null);
   const [lastNameUser, setLastNameUser] = useState<string | null>(null);
   const [emailUser, setEmailUser] = useState<string | null>(null);
-
+  const [isReportCreated, setReportCreated] = useState(false);
+  //const [reportId, setReportId] = useState<number | null>(null);
   //const router = useRouter();
-  const { id } = useParams(); //id del ticket
+  
 
   const sorted = useSearchParams();
   const [subject, setSubject] = useState(sorted.get("subject"));
@@ -115,8 +116,6 @@ function TicketPage() {
   const [createReport] = useMutation(CREATE_REPORT_MUTATION, {
     client,
   });
-
-
 
   const handleDeleteTicket = async (e: React.FormEvent) => {
     if (status === "OPEN" || status === "CLOSED") {
@@ -154,7 +153,7 @@ function TicketPage() {
     console.log("data update ticket ", data);
     if (data?.updateTicket.id) {
       alert("Ticket updated successfully");
-      window.location.href = "/dashboard/tickets";
+      window.location.href = `/admin/tickets/${userId}`;
     }
   };
 
@@ -213,40 +212,100 @@ function TicketPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("en funcion handleSubmit");
-    
+
 
     // Llama a tu mutación para crear el informe aquí
     const ticketId = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del ticket pasado a entero
-    
-   
+
+
     const fechaToString = fecha.toString();
-   
-    const { data } = await createReport({
-      variables: {
-        createPdfInput: {
-          nombre: nombre,
-          localidad: localidad,
-          fecha: fechaToString,
-          tipoDeVisita: tipoDeVisita,
-          problemaEncontrado: problemaEncontrado,
-          detalleProblema: detalleProblema,
-          trabajoRealizado: trabajoRealizado,
-          detalleTrabajo: detalleTrabajo,
-          observaciones: observaciones,
-          ticketId: ticketId,
-        }
+
+    try {
+      const { data } = await createReport({
+        variables: {
+          createPdfInput: {
+            nombre: nombre,
+            localidad: localidad,
+            fecha: fechaToString,
+            tipoDeVisita: tipoDeVisita,
+            problemaEncontrado: problemaEncontrado,
+            detalleProblema: detalleProblema,
+            trabajoRealizado: trabajoRealizado,
+            detalleTrabajo: detalleTrabajo,
+            observaciones: observaciones,
+            ticketId: ticketId,
+          },
+        },
+      });
+      console.log("data createReport ", data);
+  
+      if (data && data.createPdf.id) {
+        console.log("entro al if");
+        alert("Reporte creado correctamente.");
+        localStorage.setItem(`reportCreatedForTicket${ticketId}`, 'true');
+        localStorage.setItem(`reportIdForTicket${ticketId}`, data.createPdf.id);
+        //setReportId(data.createPdf.id);
+        setReportCreated(true);
+        //setIsModalOpen(false);
       }
-    })
-    console.log("data createReport ", data);
-    
-    if (data && data.createPdf.id) {
-      console.log("entro al if");
-      alert("Reporte creado correctamente.");
-      //setIsModalOpen(false);
+      //alert("Reporte creado correctamente.");
+      setIsModalOpen(false);
+    } catch (error) {
+      alert((error as Error).message);
     }
-    //alert("Reporte creado correctamente.");
-    setIsModalOpen(false);
   };
+
+  //llamada a la api para obtener el reporte
+  console.log("reportId ", id);
+  let reportIdInt = null;
+
+  // Verifica si window está definido
+  if (typeof window !== 'undefined') {
+    // Si window está definido, entonces estamos en el cliente y podemos acceder a localStorage
+    reportIdInt = localStorage.getItem(`reportIdForTicket${id}`) ? parseInt(localStorage.getItem(`reportIdForTicket${id}`) as string, 10) : null;
+  }
+  console.log("reportIdInt ", reportIdInt);
+  const { loading, error, data, refetch } = useQuery(GET_REPORT_QUERY, {
+      
+    variables: { id: reportIdInt },
+    skip: reportIdInt === null
+  });
+
+  const handleViewReport = async (e: React.FormEvent) => {
+    console.log ("en funcion handleViewReport");
+    
+    refetch().then(response => {
+      console.log("data getReport ", response.data);
+      //transformar data a pdf
+      const doc = new jsPDF();
+      doc.setFontSize(22);
+      doc.text('Informe de visita tecnica', 10, 20);
+      doc.line(10, 25, 200, 25);
+      
+      doc.text(`Nombre: ${response.data.pdf.nombre}`, 15, 40);
+      doc.text(`Fecha: ${response.data.pdf.fecha}`, 120, 40);
+      doc.text(`Localidad: ${response.data.pdf.localidad}`, 15, 50);
+      doc.rect(10, 30, 180, 25); // Dibuja un rectángulo alrededor del nombre, la fecha y la localidad
+  
+      doc.text(`Tipo de visita: ${response.data.pdf.tipoDeVisita}`, 15, 70);
+      doc.rect(10, 60, 180, 12); // Dibuja un rectángulo alrededor del tipo de visita
+
+      doc.text(`Problema encontrado: ${response.data.pdf.problemaEncontrado}`, 10, 80);
+      
+      doc.text(`Detalle del problema: ${response.data.pdf.detalleProblema}`, 10, 90);
+      
+      doc.text(`Trabajo realizado: ${response.data.pdf.trabajoRealizado}`, 10, 100);
+      
+      doc.text(`Detalle del trabajo: ${response.data.pdf.detalleTrabajo}`, 10, 110);
+      
+      
+      doc.text(`Observaciones: ${response.data.pdf.observaciones}`, 10, 120);
+      
+      doc.text(`Ticket ID: ${response.data.pdf.ticketId}`, 10, 130);
+      doc.save("reporte.pdf");
+    });
+    
+  }
   //const { subject } = useParams();
 
   //await loadTicket(params.ticketId);
@@ -275,85 +334,59 @@ function TicketPage() {
         >
           {status}
         </span>
-        {status !== "IN_PROGRESS" && (
-          <button
-            style={{ display: 'none' }}
-            className="absolute bottom-0 right-0 mb-4 mr-4 p-2 bg-red-500 text-white rounded-full"
-            onClick={(e) => {
-              if (status !== "IN_PROGRESS") {
-                handleDeleteTicket(e);
-              } else {
-                alert("No puedes eliminar un ticket que está en progreso.");
-              }
-            }}
-          >
-            <i className="material-icons">delete</i>
-          </button>
-        )}
-        <></>
-        {/*<div className="mb-6">
-          <Input
-            value={subject || ""}
-            onChange={(e) => setSubject(e.target.value)}
-          />
-        </div>
-        <div className="mb-6">
-          <Input
-            value={description || ""}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          </div>*/}
 
-        <div className="mb-10">
-          <button
-            style={{ display: 'none' }}
-            className="absolute bottom-0 right-0 mb-4 mr-4 p-2 bg-red-500 text-white rounded-full"
-            onClick={(e) => {
-              if (status !== "IN_PROGRESS") {
-                handleDeleteTicket(e);
-              } else {
-                alert("No puedes eliminar un ticket que está en progreso.");
-              }
-            }}
-            disabled={!subject || !description || !status || !createdAt}
-          >
-            <i className="material-icons">delete</i>
-          </button>
-        </div>
-        <div className="mb-10">
-          <button
-            style={{ display: 'none' }}
-            className="absolute bottom-0 right-0 mb-4 mr-16 p-2 bg-blue-500 text-white rounded-full"
-            onClick={(e) => {
-              if (status === "OPEN") {
-                handleEdit(e);
-              } else {
-                alert("No puedes editar un ticket que no está en estado OPEN.");
-              }
-            }}
-            disabled={!subject || !description || !status || !createdAt}
-          >
-            <i className="material-icons">edit</i>
-          </button>
-        </div>
+        <></>
+
+
+
+        
 
         <div className="mb-10">
           {status === "OPEN" ? (
-            <button
-              className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-yellow-500 text-white rounded-full"
-              onClick={(e) => {
-                if (
-                  window.confirm(
-                    "¿Estás seguro de que quieres cambiar el estado a IN_PROGRESS?"
-                  )
-                ) {
-                  handleInProgress(e);
-                }
-              }}
-              disabled={!subject || !description || !status || !createdAt}
-            >
-              Cambiar estado a IN_PROGRESS
-            </button>
+
+            <div>
+              
+              <div className="mb-6 mt-4">
+                <Input
+                  value={subject || ""}
+                  onChange={(e) => setSubject(e.target.value)}
+                />
+              </div>
+              <div className="mb-6">
+                <Input
+                  value={description || ""}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+              <button
+                className="relative bottom-0 right-0 mb-16 mr-8 mr-2  p-2 bg-blue-500 text-white rounded-full"
+                onClick={handleEdit}
+                disabled={!subject || !description || !status || !createdAt}
+              >
+                <i className="material-icons">edit</i>
+              </button>
+              <button
+                className="relative bottom-0 right-0  mr-80 p-2 bg-red-500 text-white rounded-full"
+                onClick={handleDeleteTicket}
+                disabled={!subject || !description || !status || !createdAt}>
+                <i className="material-icons">delete</i>
+              </button>
+
+              <button
+                className="absolute bottom-36 right-0 mr-8  p-2 bg-yellow-500 text-white rounded-full"
+                onClick={(e) => {
+                  if (
+                    window.confirm(
+                      "¿Estás seguro de que quieres cambiar el estado a IN_PROGRESS?"
+                    )
+                  ) {
+                    handleInProgress(e);
+                  }
+                }}
+                disabled={!subject || !description || !status || !createdAt}
+              >
+                Cambiar estado a IN_PROGRESS
+              </button></div>
           ) : status === "IN_PROGRESS" ? (
             <button
               className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-red-500 text-white rounded-full"
@@ -372,6 +405,10 @@ function TicketPage() {
             </button>
           ) : status === "CLOSED" ? (
             <div>
+              {isReportCreated && (
+              <button className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full" onClick={(e) => { handleViewReport(e)}}disabled={!subject || !description || !status || !createdAt} >Ver reporte</button>
+              )}
+              {!isReportCreated && (
               <button
                 className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full"
                 onClick={(e) => {
@@ -380,7 +417,7 @@ function TicketPage() {
                 }}
                 disabled={!subject || !description || !status || !createdAt} >
                 Crear reporte
-              </button>
+              </button>)}
 
               <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
                 <form onSubmit={handleSubmit} className="p-6 bg-white rounded shadow-md" style={{ maxWidth: '600px', width: '100%' }}>
@@ -397,7 +434,7 @@ function TicketPage() {
                       onChange={(e) => setNombre(e.target.value)}
                       id="nombre"
                       type="text"
-                      maxLength={30}
+                      maxLength={22}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                   </div>
@@ -473,7 +510,6 @@ function TicketPage() {
                       Detalle del problema
                     </Label>
                     <Input
-                      required
                       value={detalleProblema}
                       onChange={(e) => setDetalleProblema(e.target.value)}
                       id="detalleProblema"
@@ -505,7 +541,6 @@ function TicketPage() {
                       Detalle del trabajo
                     </Label>
                     <Input
-                      required
                       value={detalleTrabajo}
                       onChange={(e) => setDetalleTrabajo(e.target.value)}
                       id="detalleTrabajo"
@@ -521,7 +556,6 @@ function TicketPage() {
                       Observaciones
                     </Label>
                     <Input
-                      required
                       value={observaciones}
                       onChange={(e) => setObservaciones(e.target.value)}
                       id="observaciones"
@@ -541,4 +575,8 @@ function TicketPage() {
     </div>
   );
 }
-export default TicketPage;
+export default () => (
+  <ApolloProvider client={client}>
+    <TicketPage />
+  </ApolloProvider>
+)
