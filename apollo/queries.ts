@@ -73,3 +73,4 @@ export const GET_REPORT_QUERY = gql`
     }
   }
 `;
+

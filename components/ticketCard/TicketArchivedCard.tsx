@@ -23,10 +23,11 @@ interface Ticket {
 interface TicketCardProps {
     ticket: Ticket;
     path : string;
+    email: string;
 }
 
 // RCC
-function TicketArchivedCard({ ticket, path }: TicketCardProps) {
+function TicketArchivedCard({ ticket, path, email }: TicketCardProps) {
     return (
         <div className="m-6 flex justify-center">
             <Link href={{
@@ -35,7 +36,8 @@ function TicketArchivedCard({ ticket, path }: TicketCardProps) {
                     description: ticket.description,
                     status: ticket.status,
                     createdAt: ticket.createdAt,
-                    userId: ticket.userId
+                    userId: ticket.userId,
+                    email: email
                 }
             }}
                 className="max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">

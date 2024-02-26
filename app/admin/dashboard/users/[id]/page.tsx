@@ -135,7 +135,7 @@ function UserPage() {
           </Link>
         </div>
         <div className="mb-10">
-          <Link href={`/admin/ticketsArchivados/${id}`}>
+          <Link href={`/admin/ticketsArchivados/${id}?email=${email}`}>
             <button className="absolute bottom-0 right-0 mb-4 mr-56 p-2 bg-red-500 text-white rounded-full">
               Ver Tickets archivados
             </button>

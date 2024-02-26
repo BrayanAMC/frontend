@@ -42,6 +42,8 @@ function TicketPages() {
     const { id }  = useParams();
     const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del usuario dueño del ticket
     const [userId, setUserId] = useState<number | null>(null);
+    const sorted = useSearchParams();
+    const email = sorted.get("email") || "";
     //console.log("userId: ",userId);
 
     /*useEffect(() => {
@@ -84,7 +86,7 @@ function TicketPages() {
                 <p>Usted no tiene tickets aún.</p>
             ) : (
                 tickets.map((ticket: Ticket) => (
-                    <TicketArchivedCard ticket={ticket} path= "/admin/ticketsArchivados/ticket" key={ticket.id}/>
+                    <TicketArchivedCard ticket={ticket} path= "/admin/ticketsArchivados/ticket" key={ticket.id} email={email}/>
                 ))
             )}
         </div>

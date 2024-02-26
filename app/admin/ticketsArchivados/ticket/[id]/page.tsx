@@ -22,11 +22,11 @@ function TicketArchivedPage() {
     const status = sorted.get("status") || "";
     const createdAt = sorted.get("createdAt") || "";
     const userId = Number(sorted.get("userId")) || 0; //id del usuario dueño del ticket
-
+    const email = sorted.get("email") || "";
 
     return (
         
-            <TicketArchivedCardSingle id={idNumber} subject={subject} description={description} status={status} createdAt={createdAt} userId={userId} />
+            <TicketArchivedCardSingle id={idNumber} subject={subject} description={description} status={status} createdAt={createdAt} userId={userId} email={email} />
         
     )
 

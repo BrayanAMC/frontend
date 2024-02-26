@@ -2,9 +2,11 @@
 import { Label } from "@/components/ui/label";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { GET_REPORT_QUERY } from "@/apollo/queries";
-import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider } from "@apollo/client";
+import { GET_REPORT_QUERY} from "@/apollo/queries";
+import { SEND_REPORT_TO_USER_MUTATION } from "@/apollo/mutation";
+import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider, useMutation } from "@apollo/client";
 import { generateReport } from '@/components/generateReport/generateReport';
+import { generateReportToBase64 } from '@/components/generateReport/generateReport';
 
 const httpLink = createHttpLink({
     uri: "http://localhost:3002/graphql",
@@ -22,10 +24,11 @@ type TicketProps = {
     status: string;
     createdAt: string;
     userId: number;
+    email: string;
 };
 
 
-function TicketArchivedCardSingle({ id, subject, description, status, createdAt, userId }: TicketProps) {
+function TicketArchivedCardSingle({ id, subject, description, status, createdAt, userId, email }: TicketProps) {
 
     const [isReportCreated, setReportCreated] = useState(false);
 
@@ -50,6 +53,9 @@ function TicketArchivedCardSingle({ id, subject, description, status, createdAt,
         variables: { id: reportIdInt },
         skip: reportIdInt === null
     });
+    //fin llamada a la api para obtener el reporte
+
+   
     const handleViewReport = async (e: React.FormEvent) => {
         console.log("en funcion handleViewReport");
 
@@ -59,6 +65,40 @@ function TicketArchivedCardSingle({ id, subject, description, status, createdAt,
             generateReport(response.data);
         });
     }
+    //inicio llamada a la api para enviar el reporte
+    const [sendReport] = useMutation(SEND_REPORT_TO_USER_MUTATION,{
+        client,
+    });
+    
+    const handleSendReport = async (e: React.FormEvent) => {
+        console.log("en funcion handleSendReport");
+    
+        refetch().then(async response => {
+            console.log("data getReport 2", response.data);
+            
+            // Transformar data a PDF en formato base64
+            const pdfBase64 = generateReportToBase64(response.data);
+            console.log("pdfBase64 ", pdfBase64);
+            // Aquí puedes enviar pdfBase64 al backend
+            const { data } = await sendReport({
+                variables: {
+                    sendPdfToUserInput: {
+                      email: email,
+                      pdfBase64: pdfBase64
+                    }
+                }
+            });
+    
+            console.log("Mutation response data: ", data);
+            if (data.sendPdfToUser.success) {
+                alert("Reporte enviado al usuario");
+            }else{
+                alert("Error al enviar el reporte");
+            }
+        });
+        
+    }
+     //fin llamada a la api para enviar el reporte
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 ">
@@ -90,12 +130,19 @@ function TicketArchivedCardSingle({ id, subject, description, status, createdAt,
                     <div>
                         <button className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full"
                             onClick={(e) => { handleViewReport(e) }} disabled={!subject || !description || !status || !createdAt} >Ver reporte</button>
+
+                        <button className="absolute bottom-0 right-0 mb-4 mr-40 p-2 bg-yellow-500 text-white rounded-full"
+                            onClick={handleSendReport}
+                            disabled={!subject || !description || !status || !createdAt}
+                        >
+                            Enviar reporte al usuario
+                        </button>
                     </div>
                 )}
             </div>
         </div>
     );
-}export default ({ id, subject, description, status, createdAt, userId }: TicketProps) => (
+} export default ({ id, subject, description, status, createdAt, userId, email }: TicketProps) => (
     <ApolloProvider client={client}>
         <TicketArchivedCardSingle
             id={id}
@@ -104,6 +151,7 @@ function TicketArchivedCardSingle({ id, subject, description, status, createdAt,
             status={status}
             createdAt={createdAt}
             userId={userId}
+            email= {email}
         />
     </ApolloProvider>
 )

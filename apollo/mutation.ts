@@ -182,3 +182,12 @@ export const ARCHIVE_REPORT_MUTATION = gql`
     }
   }
 `;
+
+export const SEND_REPORT_TO_USER_MUTATION = gql`
+  mutation SendPdfToUser($sendPdfToUserInput: SendPdfToUserInput!) {
+    sendPdfToUser(sendPdfToUserInput: $sendPdfToUserInput){
+      success
+      message
+    }
+  }
+`;
