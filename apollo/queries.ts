@@ -14,6 +14,21 @@ export const GET_TICKETS_BY_USER_ID_QUERY = gql`
   }
 `;
 
+
+export const GET_TICKETS_ARCHIVED_BY_USER_ID_QUERY = gql`
+  query GetTicketsArchivedByUserId($userId: Int!) {
+    getTicketsArchivedByUserId(userId: $userId) {
+      id
+      subject
+      description
+      status
+      createdAt
+      closedAt
+      userId
+    }
+  }
+`;
+
 export const GET_INSTITUTIONS_QUERY = gql`
   query GetInstitutions {
     institutions {

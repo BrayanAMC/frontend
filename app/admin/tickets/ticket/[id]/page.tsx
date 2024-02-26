@@ -22,7 +22,8 @@ import {
 } from "next/navigation";
 import { useState, useEffect } from "react";
 import { ApolloClient, InMemoryCache, createHttpLink, useMutation, ApolloProvider, useQuery } from "@apollo/client";
-import { CHANGE_STATUS_TO_CLOSED_MUTATION, CHANGE_STATUS_TO_IN_PROGRESS_MUTATION, CREATE_REPORT_MUTATION, DELETE_TICKET_MUTATION, UPDATE_TICKET_MUTATION,
+import {
+  ARCHIVE_REPORT_MUTATION, CHANGE_STATUS_TO_CLOSED_MUTATION, CHANGE_STATUS_TO_IN_PROGRESS_MUTATION, CREATE_REPORT_MUTATION, DELETE_TICKET_MUTATION, UPDATE_TICKET_MUTATION,
 } from "@/apollo/mutation";
 import { GET_REPORT_QUERY } from "@/apollo/queries";
 import { parse } from "path";
@@ -30,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Modal from 'react-modal';
 import jsPDF from "jspdf";
+import { generateReport } from '@/components/generateReport/generateReport';
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3002/graphql",
@@ -85,7 +87,7 @@ function TicketPage() {
   const [isReportCreated, setReportCreated] = useState(false);
   //const [reportId, setReportId] = useState<number | null>(null);
   //const router = useRouter();
-  
+
 
   const sorted = useSearchParams();
   const [subject, setSubject] = useState(sorted.get("subject"));
@@ -114,6 +116,10 @@ function TicketPage() {
   });
 
   const [createReport] = useMutation(CREATE_REPORT_MUTATION, {
+    client,
+  });
+
+  const [archiveReport] = useMutation(ARCHIVE_REPORT_MUTATION, {
     client,
   });
 
@@ -238,7 +244,7 @@ function TicketPage() {
         },
       });
       console.log("data createReport ", data);
-  
+
       if (data && data.createPdf.id) {
         console.log("entro al if");
         alert("Reporte creado correctamente.");
@@ -266,45 +272,40 @@ function TicketPage() {
   }
   console.log("reportIdInt ", reportIdInt);
   const { loading, error, data, refetch } = useQuery(GET_REPORT_QUERY, {
-      
+
     variables: { id: reportIdInt },
     skip: reportIdInt === null
   });
 
   const handleViewReport = async (e: React.FormEvent) => {
-    console.log ("en funcion handleViewReport");
-    
+    console.log("en funcion handleViewReport");
+  
     refetch().then(response => {
       console.log("data getReport ", response.data);
       //transformar data a pdf
-      const doc = new jsPDF();
-      doc.setFontSize(22);
-      doc.text('Informe de visita tecnica', 10, 20);
-      doc.line(10, 25, 200, 25);
-      
-      doc.text(`Nombre: ${response.data.pdf.nombre}`, 15, 40);
-      doc.text(`Fecha: ${response.data.pdf.fecha}`, 120, 40);
-      doc.text(`Localidad: ${response.data.pdf.localidad}`, 15, 50);
-      doc.rect(10, 30, 180, 25); // Dibuja un rectángulo alrededor del nombre, la fecha y la localidad
-  
-      doc.text(`Tipo de visita: ${response.data.pdf.tipoDeVisita}`, 15, 70);
-      doc.rect(10, 60, 180, 12); // Dibuja un rectángulo alrededor del tipo de visita
-
-      doc.text(`Problema encontrado: ${response.data.pdf.problemaEncontrado}`, 10, 80);
-      
-      doc.text(`Detalle del problema: ${response.data.pdf.detalleProblema}`, 10, 90);
-      
-      doc.text(`Trabajo realizado: ${response.data.pdf.trabajoRealizado}`, 10, 100);
-      
-      doc.text(`Detalle del trabajo: ${response.data.pdf.detalleTrabajo}`, 10, 110);
-      
-      
-      doc.text(`Observaciones: ${response.data.pdf.observaciones}`, 10, 120);
-      
-      doc.text(`Ticket ID: ${response.data.pdf.ticketId}`, 10, 130);
-      doc.save("reporte.pdf");
+      generateReport(response.data);
     });
-    
+  }
+
+  const handleArchiveTicket = async (e: React.FormEvent) => {
+    console.log("en funcion handleArchiveTicket");
+    const ticketId = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del ticket pasado a entero
+    console.log("ticketId ", ticketId);
+    try {
+      const { data } = await archiveReport({
+        variables: {
+          ticketId: ticketId,
+        },
+      });
+      console.log("data archiveReport ", data);
+
+      if (data?.archiveTicket.success) {
+        alert("Ticket archivado correctamente.");
+        window.location.href = `/admin/tickets/${userId}`;
+      }
+    } catch (error) {
+      alert((error as Error).message);
+    }
   }
   //const { subject } = useParams();
 
@@ -339,13 +340,13 @@ function TicketPage() {
 
 
 
-        
+
 
         <div className="mb-10">
           {status === "OPEN" ? (
 
             <div>
-              
+
               <div className="mb-6 mt-4">
                 <Input
                   value={subject || ""}
@@ -406,18 +407,21 @@ function TicketPage() {
           ) : status === "CLOSED" ? (
             <div>
               {isReportCreated && (
-              <button className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full" onClick={(e) => { handleViewReport(e)}}disabled={!subject || !description || !status || !createdAt} >Ver reporte</button>
+                <div>
+                  <button className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full" onClick={(e) => { handleViewReport(e) }} disabled={!subject || !description || !status || !createdAt} >Ver reporte</button>
+                  <button className="absolute bottom-0 right-0 mb-4 mr-40 p-2 bg-red-500 text-white rounded-full" onClick={(e) => { handleArchiveTicket(e) }} disabled={!subject || !description || !status || !createdAt} >Archivar ticket</button>
+                </div>
               )}
               {!isReportCreated && (
-              <button
-                className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full"
-                onClick={(e) => {
-                  handleCreateReport(e);
+                <button
+                  className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full"
+                  onClick={(e) => {
+                    handleCreateReport(e);
 
-                }}
-                disabled={!subject || !description || !status || !createdAt} >
-                Crear reporte
-              </button>)}
+                  }}
+                  disabled={!subject || !description || !status || !createdAt} >
+                  Crear reporte
+                </button>)}
 
               <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
                 <form onSubmit={handleSubmit} className="p-6 bg-white rounded shadow-md" style={{ maxWidth: '600px', width: '100%' }}>

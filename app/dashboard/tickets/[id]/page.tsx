@@ -15,8 +15,7 @@
 }*/
 "use client";
 import {
-  useSearchParams,
-  useParams,
+  useSearchParams, useParams,
   ReadonlyURLSearchParams,
 } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -25,14 +24,21 @@ import {
   InMemoryCache,
   createHttpLink,
   useMutation,
+  useQuery,
+  ApolloProvider
 } from "@apollo/client";
 import {
   DELETE_TICKET_MUTATION,
   UPDATE_TICKET_MUTATION,
+  ARCHIVE_REPORT_MUTATION,
 } from "@/apollo/mutation";
 import { parse } from "path";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { GET_REPORT_QUERY } from "@/apollo/queries";
+import jsPDF from "jspdf";
+import { generateReport } from '@/components/generateReport/generateReport';
+
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3002/graphql",
@@ -55,12 +61,21 @@ function TicketPage() {
     }
   }, []);
 
+
+
   const [firstNameUser, setFirstNameUser] = useState<string | null>(null);
   const [lastNameUser, setLastNameUser] = useState<string | null>(null);
   const [emailUser, setEmailUser] = useState<string | null>(null);
 
   //const router = useRouter();
   const { id } = useParams();
+  const [isReportCreated, setReportCreated] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem(`reportCreatedForTicket${id}`)) {
+      setReportCreated(true);
+    }
+  }, [id]);
 
   const sorted = useSearchParams();
   const [subject, setSubject] = useState(sorted.get("subject"));
@@ -68,12 +83,18 @@ function TicketPage() {
 
   const status = sorted.get("status");
   const createdAt = sorted.get("createdAt");
+  const userId = sorted.get("userId"); //id del usuario dueño del ticket
+
 
   const [deleteTicket] = useMutation(DELETE_TICKET_MUTATION, {
     client,
   });
 
   const [updateTicket] = useMutation(UPDATE_TICKET_MUTATION, {
+    client,
+  });
+
+  const [archiveReport] = useMutation(ARCHIVE_REPORT_MUTATION, {
     client,
   });
 
@@ -116,6 +137,52 @@ function TicketPage() {
       window.location.href = "/dashboard/tickets";
     }
   };
+
+  //llamada a la api para obtener el reporte
+  console.log("reportId ", id);
+  let reportIdInt = null;
+
+  // Verifica si window está definido
+  if (typeof window !== 'undefined') {
+    // Si window está definido, entonces estamos en el cliente y podemos acceder a localStorage
+    reportIdInt = localStorage.getItem(`reportIdForTicket${id}`) ? parseInt(localStorage.getItem(`reportIdForTicket${id}`) as string, 10) : null;
+  }
+  console.log("reportIdInt ", reportIdInt);
+  const { loading, error, data, refetch } = useQuery(GET_REPORT_QUERY, {
+
+    variables: { id: reportIdInt },
+    skip: reportIdInt === null
+  });
+  const handleViewReport = async (e: React.FormEvent) => {
+    console.log("en funcion handleViewReport");
+  
+    refetch().then(response => {
+      console.log("data getReport ", response.data);
+      //transformar data a pdf
+      generateReport(response.data);
+    });
+  }
+
+  const handleArchiveTicket = async (e: React.FormEvent) => {
+    console.log("en funcion handleArchiveTicket");
+    const ticketId = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del ticket pasado a entero
+    console.log("ticketId ", ticketId);
+    try {
+      const { data } = await archiveReport({
+        variables: {
+          ticketId: ticketId,
+        },
+      });
+      console.log("data archiveReport ", data);
+
+      if (data?.archiveTicket.success) {
+        alert("Ticket archivado correctamente.");
+        window.location.href = `/admin/tickets/${userId}`;
+      }
+    } catch (error) {
+      alert((error as Error).message);
+    }
+  }
   //const { subject } = useParams();
 
   //await loadTicket(params.ticketId);
@@ -223,24 +290,15 @@ function TicketPage() {
         <div className="mb-10">
           {status === "CLOSED" && (
             <div>
-            <button
-              className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full"
-              onClick={(e) => {
-                // Aquí puedes agregar la lógica para archivar el ticket
-              }}
-            >
-              Archivar ticket
-            </button>
-            <button
-            className="absolute bottom-0 right-0 mb-4 mr-44 p-2 bg-blue-500 text-white rounded-full"
-            onClick={(e) => {
-              // Aquí puedes agregar la lógica para archivar el ticket
-            }}
-          >
-            Ver Informe
-          </button>
-          </div>
-            
+
+              {isReportCreated && (
+                <div>
+                  <button className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full" onClick={(e) => { handleViewReport(e) }} disabled={!subject || !description || !status || !createdAt} >Ver reporte</button>
+                  <button className="absolute bottom-0 right-0 mb-4 mr-40 p-2 bg-red-500 text-white rounded-full" onClick={(e) => { handleArchiveTicket(e) }} disabled={!subject || !description || !status || !createdAt} >Archivar ticket</button>
+                </div>
+              )}
+            </div>
+
           )}
         </div>
 
@@ -248,4 +306,8 @@ function TicketPage() {
     </div>
   );
 }
-export default TicketPage;
+export default () => (
+ <ApolloProvider client={client}>
+    <TicketPage />
+  </ApolloProvider>
+)

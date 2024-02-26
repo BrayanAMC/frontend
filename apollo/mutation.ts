@@ -173,3 +173,12 @@ mutation CreatePdf($createPdfInput: CreatePdfInput!) {
   }
 }
 `;
+
+export const ARCHIVE_REPORT_MUTATION = gql`
+  mutation ArchiveTicket($ticketId: Int!) {
+    archiveTicket(ticketId: $ticketId) {
+      success
+      message
+    }
+  }
+`;
