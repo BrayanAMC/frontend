@@ -69,7 +69,7 @@ function RegisterForm() {
       }
     },
   });
-  console.log("data: ", data);
+  console.log("data de get institution query: ", data);
 
 
 
@@ -215,7 +215,7 @@ function RegisterForm() {
             <>
               <AlertTitle style={{ color: 'green' }}>Registro Exitoso</AlertTitle>
               <AlertDescription style={{ color: 'green' }}>
-                Tu registro se ha completado con éxito.
+                Tu registro se ha completado con éxito, se ha enviado un correo electrónico al nuevo usuario.
               </AlertDescription>
 
             </>
@@ -225,7 +225,7 @@ function RegisterForm() {
       )}
       {error2 === null && redirectCountdown < 4 && (
         <div className="redirectionBox">
-          <p>Serás redirigido a la página de login en {redirectCountdown} segundos.</p>
+          <p>Serás redirigido a la página dashboard en {redirectCountdown} segundos.</p>
         </div>
       )}
     </div>

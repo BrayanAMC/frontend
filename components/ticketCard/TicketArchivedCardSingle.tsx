@@ -74,11 +74,11 @@ function TicketArchivedCardSingle({ id, subject, description, status, createdAt,
         console.log("en funcion handleSendReport");
     
         refetch().then(async response => {
-            console.log("data getReport 2", response.data);
+            //console.log("data getReport 2", response.data);
             
             // Transformar data a PDF en formato base64
             const pdfBase64 = generateReportToBase64(response.data);
-            console.log("pdfBase64 ", pdfBase64);
+            //console.log("pdfBase64 ", pdfBase64);
             // Aquí puedes enviar pdfBase64 al backend
             const { data } = await sendReport({
                 variables: {
