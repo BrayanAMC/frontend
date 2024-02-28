@@ -74,3 +74,18 @@ export const GET_REPORT_QUERY = gql`
   }
 `;
 
+export const GET_ALL_TICKETS_QUERY = gql`
+  query GetAllTickets($ticketsInput: TicketsInput!) {
+    tickets(TicketsInput: $ticketsInput) {
+      id
+      subject
+      description
+      status
+      createdAt
+      closedAt
+      userId
+      institutionId
+      archived
+    }
+  }
+`;

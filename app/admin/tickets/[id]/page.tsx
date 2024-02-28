@@ -23,22 +23,29 @@ interface Ticket {
     assignedToId: number | null;
 }
 
+const columns = [
+    { name: 'ID', selector: 'id', sortable: true },
+    { name: 'Subject', selector: 'subject', sortable: true },
+    { name: 'Description', selector: 'description', sortable: true },
+    { name: 'Status', selector: 'status', sortable: true },
+    // Agrega aquí las demás columnas que necesites
+];
 
-    const httpLink = createHttpLink({
-        uri: 'http://localhost:3002/graphql',
-    });
-    
-    const client = new ApolloClient({
-        link: httpLink,
-        cache: new InMemoryCache(),
-    });
-    console.log("antes de llamar a la query")
+const httpLink = createHttpLink({
+    uri: 'http://localhost:3002/graphql',
+});
+
+const client = new ApolloClient({
+    link: httpLink,
+    cache: new InMemoryCache(),
+});
+console.log("antes de llamar a la query")
 
 function TicketPages() {
     //const userIdString = localStorage.getItem('idUser');
     //const userId = userIdString ? parseInt(userIdString) : 0;
     //const [userId, setUserId] = useState(0);
-    const { id }  = useParams();
+    const { id } = useParams();
     const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del usuario dueño del ticket
     const [userId, setUserId] = useState<number | null>(null);
     //console.log("userId: ",userId);
@@ -53,18 +60,18 @@ function TicketPages() {
     //console.log("userId: ",userId);
 
     //let userId = null;
-    
 
-    
-    
+
+
+
     const { loading, error, data, refetch } = useQuery(GET_TICKETS_BY_USER_ID_QUERY, {
         variables: { userId: idNumber },
         skip: idNumber === null
     });
     //console.log("imprimiendo data: ", data);
     //console.log("despues de llamar a la query", userId)
-    
-    
+
+
     const tickets = data?.getTicketsByUserId || [];
 
     // Refetch tickets each time the component is rendered
@@ -83,12 +90,12 @@ function TicketPages() {
                 <p>Usted no tiene tickets aún.</p>
             ) : (
                 tickets.map((ticket: Ticket) => (
-                    <TicketCard ticket={ticket} path= "/admin/tickets/ticket"key={ticket.id}/>
+                    <TicketCard ticket={ticket} path="/admin/tickets/ticket" key={ticket.id} />
                 ))
             )}
         </div>
     )
-}export default () => (
+} export default () => (
     <ApolloProvider client={client}>
         <TicketPages />
     </ApolloProvider>

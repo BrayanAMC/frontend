@@ -18,6 +18,7 @@ interface Ticket {
     closedAt: string | null;
     userId: number;
     assignedToId: number | null;
+    archived: boolean;
 }
 
 interface TicketCardProps {
@@ -49,6 +50,7 @@ function TicketCard({ ticket, path }: TicketCardProps) {
                         <p className="mt-2 text-gray-500">{ticket.description}</p>
                         <p className="mt-2 text-gray-500">Status: {ticket.status}</p>
                         <p className="mt-2 text-gray-500">Created At: {new Date(ticket.createdAt).toLocaleDateString()}</p>
+                        <p className="mt-2 text-gray-500">Archived: {String(ticket.archived)}</p>
                     </div>
                 </div>
             </Link>
