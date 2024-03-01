@@ -96,6 +96,7 @@ function TicketPage() {
   const status = sorted.get("status");
   const createdAt = sorted.get("createdAt");
   const userId = sorted.get("userId"); //id del usuario dueño del ticket
+  const archived = sorted.get("archived");
 
   const [adminUserId, setAdminUserId] = useState<string | null>(null); //id del admin
 
@@ -409,8 +410,10 @@ function TicketPage() {
               {isReportCreated && (
                 <div>
                   <button className="absolute bottom-0 right-0 mb-4 mr-8 p-2 bg-blue-500 text-white rounded-full" onClick={(e) => { handleViewReport(e) }} disabled={!subject || !description || !status || !createdAt} >Ver reporte</button>
+                  {archived === "false" && (
                   <button className="absolute bottom-0 right-0 mb-4 mr-40 p-2 bg-red-500 text-white rounded-full" onClick={(e) => { handleArchiveTicket(e) }} disabled={!subject || !description || !status || !createdAt} >Archivar ticket</button>
-                </div>
+                  )}                
+                  </div>
               )}
               {!isReportCreated && (
                 <button

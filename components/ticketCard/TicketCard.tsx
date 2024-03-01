@@ -36,7 +36,8 @@ function TicketCard({ ticket, path }: TicketCardProps) {
                     description: ticket.description,
                     status: ticket.status,
                     createdAt: ticket.createdAt,
-                    userId: ticket.userId
+                    userId: ticket.userId,
+                    archived: ticket.archived
                 }
             }}
                 className="max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">

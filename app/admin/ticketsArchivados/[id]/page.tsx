@@ -22,6 +22,7 @@ interface Ticket {
     closedAt: string | null;
     userId: number;
     assignedToId: number | null;
+    archived: boolean;
 }
 
 
@@ -69,7 +70,7 @@ function TicketPages() {
     
     
     const tickets = data?.getTicketsArchivedByUserId || [];
-
+    console.log("imprimmiendo tickets: ", tickets);
     // Refetch tickets each time the component is rendered
     useEffect(() => {
         if (idNumber !== null) {

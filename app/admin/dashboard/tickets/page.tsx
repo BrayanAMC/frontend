@@ -4,6 +4,7 @@ import { GET_ALL_TICKETS_QUERY } from "@/apollo/queries";
 import TicketCard from "@/components/ticketCard/TicketCard";
 import { useState } from "react";
 import Pagination from 'react-bootstrap/Pagination';
+import { useEffect } from 'react';
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -33,6 +34,7 @@ const client = new ApolloClient({
 });
 function TicketsPage() {
     //constantes de los filtros
+    const [dateFilter, setDateFilter] = useState("");
     const [archivedFilter, setArchivedFilter] = useState<boolean | null>(null);
     const [statusFilter, setStatusFilter] = useState("");
 
@@ -41,13 +43,14 @@ function TicketsPage() {
     const [offset, setOffset] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
 
-    const { loading, error, data } = useQuery(GET_ALL_TICKETS_QUERY, {
+    const { loading, error, data, refetch } = useQuery(GET_ALL_TICKETS_QUERY, {
         variables: {
             ticketsInput: {
                 limit: limit + 1,
                 offset,
                 status: statusFilter || undefined,
-                archived: archivedFilter
+                archived: archivedFilter,
+                date: dateFilter ? new Date(dateFilter).toISOString() : undefined
             }
         },
         onCompleted: (data) => {
@@ -56,6 +59,10 @@ function TicketsPage() {
         onError: (error) => {
             if (error.message === 'No more tickets') {
                 setHasMoreTickets(false);
+                // Preserve the state of your filters
+                setArchivedFilter(archivedFilter);
+                setStatusFilter(statusFilter);
+                setDateFilter(dateFilter);
             }
         }
     });
@@ -72,9 +79,21 @@ function TicketsPage() {
         }
     };
 
-    const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setStatusFilter(event.target.value);
+    useEffect(() => {
+        refetch();
+    }, [statusFilter, archivedFilter, dateFilter, offset]);
+
+    const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = event.target.value;
+
+        // Actualiza el estado de statusFilter con el nuevo valor
+        if (value === 'OPEN' || value === 'CLOSED' || value === 'IN_PROGRESS') {
+            setStatusFilter(value);
+        } else {
+            setStatusFilter(""); // Si el valor es "ALL", establece statusFilter a una cadena vacía
+        }
         handlePageChange(0);
+        //refetch(); // Refetch the query after changing the filter
     };
 
     const handleArchivedChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -91,27 +110,51 @@ function TicketsPage() {
         handlePageChange(0);
     };
 
-    const filteredTickets = tickets.filter((ticket: Ticket) => statusFilter ? ticket.status === statusFilter : true);
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setDateFilter(value);
+        handlePageChange(0);
+    };
+
+    const filteredTickets = tickets
+        .filter((ticket: Ticket) => statusFilter ? ticket.status === statusFilter : true)
+        .filter((ticket: Ticket) => {
+            if (dateFilter) {
+                const ticketDate = new Date(ticket.createdAt);
+                const filterDate = new Date(dateFilter);
+
+                return ticketDate.getFullYear() > filterDate.getFullYear()
+                    || (ticketDate.getFullYear() === filterDate.getFullYear() && ticketDate.getMonth() > filterDate.getMonth())
+                    || (ticketDate.getFullYear() === filterDate.getFullYear() && ticketDate.getMonth() === filterDate.getMonth() && ticketDate.getDate() >= filterDate.getDate());
+            }
+
+            return true;
+        });
+
     if (loading) return <p>Loading...</p>;
     return (
         <div className="h-screen flex flex-col pb-20">
             <div>
                 <label htmlFor="archived-filter">Filter by archived: </label>
-                <select id="archived-filter" onChange={handleArchivedChange}>
+                <select id="archived-filter" onChange={handleArchivedChange} >
                     <option value="">All</option>
                     <option value="true">Archived</option>
                     <option value="false">Not Archived</option>
                 </select>
-                {/* Resto del código... */}
+
             </div>
             <div>
                 <label htmlFor="status-filter">Filter by status: </label>
-                <select id="status-filter" onChange={handleFilterChange}>
+                <select id="status-filter" onChange={handleStatusChange} value={statusFilter}>
                     <option value="">All</option>
                     <option value={TicketStatus.OPEN}>Open</option>
                     <option value={TicketStatus.IN_PROGRESS}>In Progress</option>
                     <option value={TicketStatus.CLOSED}>Closed</option>
                 </select>
+            </div>
+            <div>
+                <label htmlFor="date-filter">Filter by date: </label>
+                <input type="date" id="date-filter" onChange={handleDateChange} value={dateFilter} />
             </div>
             <div className="flex-grow">
                 {tickets.length === 0 ? (

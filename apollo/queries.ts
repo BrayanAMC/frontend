@@ -10,6 +10,7 @@ export const GET_TICKETS_BY_USER_ID_QUERY = gql`
       createdAt
       closedAt
       userId
+      archived
     }
   }
 `;
@@ -25,6 +26,7 @@ export const GET_TICKETS_ARCHIVED_BY_USER_ID_QUERY = gql`
       createdAt
       closedAt
       userId
+      archived
     }
   }
 `;

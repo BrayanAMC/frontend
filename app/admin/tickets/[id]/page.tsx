@@ -21,6 +21,7 @@ interface Ticket {
     closedAt: string | null;
     userId: number;
     assignedToId: number | null;
+    archived: boolean;
 }
 
 const columns = [
