@@ -26,6 +26,7 @@ export const GET_TICKETS_ARCHIVED_BY_USER_ID_QUERY = gql`
       createdAt
       closedAt
       userId
+      institutionId
       archived
     }
   }
@@ -79,6 +80,22 @@ export const GET_REPORT_QUERY = gql`
 export const GET_ALL_TICKETS_QUERY = gql`
   query GetAllTickets($ticketsInput: TicketsInput!) {
     tickets(TicketsInput: $ticketsInput) {
+      id
+      subject
+      description
+      status
+      createdAt
+      closedAt
+      userId
+      institutionId
+      archived
+    }
+  }
+`;
+
+export const TEST_GET_ALL_TICKETS_QUERY = gql`
+  query GetAllTickets {
+    testingTickets {
       id
       subject
       description
