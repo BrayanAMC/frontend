@@ -251,6 +251,7 @@ function TestTicketsPage() {
     const [statusFilter, setStatusFilter] = useState<TicketStatus | null>(null);
     const [dateFilter, setDateFilter] = useState<Date | null>(null);
     const [institutionFilter, setInstitutionFilter] = useState(0);
+    const [archivedFilter, setArchivedFilter] = useState<boolean | null>(null);
 
     const { loading, error, data, refetch } = useQuery(TEST_GET_ALL_TICKETS_QUERY)
     //console.log('data', data)
@@ -266,6 +267,9 @@ function TestTicketsPage() {
         }
 
         if (institutionFilter && ticket.institutionId !== institutionFilter) {
+            return false;
+        }
+        if (archivedFilter !== null && ticket.archived !== archivedFilter) {
             return false;
         }
         return true;
@@ -295,6 +299,11 @@ function TestTicketsPage() {
                 {dataInstitutions?.institutions?.map((institution: Institution) => (
                     <option value={institution.id}>{institution.name}</option>
                 ))}
+            </select>
+            <select value={archivedFilter === null ? '' : archivedFilter.toString()} onChange={e => setArchivedFilter(e.target.value === '' ? null : e.target.value === 'true')}>
+                <option value="">Todos</option>
+                <option value="true">Archivados</option>
+                <option value="false">No Archivados</option>
             </select>
             {filteredTickets.length === 0 ? (
                 <p>Usted no tiene tickets aún.</p>
