@@ -6,6 +6,7 @@ import { gql } from "@apollo/client";
 import { useState, useEffect } from 'react';
 import { useSearchParams, useParams, ReadonlyURLSearchParams } from 'next/navigation';
 import TicketArchivedCard from "@/components/ticketCard/TicketArchivedCard";
+import DataTable from 'react-data-table-component';
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -22,17 +23,27 @@ interface Ticket {
     closedAt: string | null;
     userId: number;
     assignedToId: number | null;
+    archived: boolean;
 }
 
+const columns = [
+    { name: 'ID', selector: (row: Ticket) => row.id, sortable: true },
+    { name: 'Subject', selector: (row: Ticket) => row.subject, sortable: true },
+    { name: 'Description', selector: (row: Ticket) => row.description, sortable: true },
+    { name: 'Status', selector: (row: Ticket) => row.status, sortable: true },
+    { name: 'Created At', selector: (row: Ticket) => row.createdAt, sortable: true },
+    // Agrega aquí las demás columnas que necesites
+];
 
-    const httpLink = createHttpLink({
-        uri: 'http://localhost:3002/graphql',
-    });
-    
-    const client = new ApolloClient({
-        link: httpLink,
-        cache: new InMemoryCache(),
-    });
+
+const httpLink = createHttpLink({
+    uri: 'http://localhost:3002/graphql',
+});
+
+const client = new ApolloClient({
+    link: httpLink,
+    cache: new InMemoryCache(),
+});
 
 function TicketPages() {
 
@@ -46,12 +57,26 @@ function TicketPages() {
 
     }, []);
 
+    const [statusFilter, setStatusFilter] = useState<TicketStatus | null>(null);
+    const [dateFilter, setDateFilter] = useState<Date | null>(null);
+
     const { loading, error, data, refetch } = useQuery(GET_TICKETS_ARCHIVED_BY_USER_ID_QUERY, {
         variables: { userId: userId },
         skip: userId === null
     });
 
     const tickets = data?.getTicketsArchivedByUserId || [];
+
+    const filteredTickets = tickets.filter((ticket: Ticket) => {
+        if (statusFilter && ticket.status !== statusFilter) {
+            return false;
+        }
+        if (dateFilter && new Date(ticket.createdAt) < dateFilter) {
+            return false;
+        }
+        return true;
+
+    });
 
     useEffect(() => {
         if (userId !== null) {
@@ -62,19 +87,42 @@ function TicketPages() {
 
     return (
         <div>
-            {tickets.length === 0 ? (
+            <input type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
+            <select value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
+                <option value="">All</option>
+                <option value={TicketStatus.OPEN}>Open</option>
+                <option value={TicketStatus.IN_PROGRESS}>In Progress</option>
+                <option value={TicketStatus.CLOSED}>Closed</option>
+            </select>
+            {filteredTickets.length === 0 ? (
                 <p>Usted no tiene tickets aún.</p>
             ) : (
-                tickets.map((ticket: Ticket) => (
-                    <TicketArchivedCard ticket={ticket} path= "/dashboard/archiveTickets/ticket" key={ticket.id}/>
-                ))
+                <DataTable
+                    title="Tickets Archived"
+                    columns={columns}
+                    data={filteredTickets}
+                    pagination
+                    onRowClicked={row => {
+                        const query = new URLSearchParams({
+                            subject: row.subject,
+                            description: row.description,
+                            status: row.status,
+                            createdAt: row.createdAt,
+                            userId: String(row.userId),
+                            archived: String(row.archived)
+                        }).toString();
+
+                        window.location.href = `/dashboard/archiveTickets/ticket/${row.id}?${query}`;
+                    }}
+                />
             )}
         </div>
     )
 
 
-}export default () => (
+} export default () => (
     <ApolloProvider client={client}>
         <TicketPages />
     </ApolloProvider>
 );
+//"/dashboard/archiveTickets/ticket"
