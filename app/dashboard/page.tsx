@@ -5,7 +5,7 @@ import ViewArchivedTicketsButtom from "@/components/dashboard/ViewArchivedTicket
 export default function Dashboard() {
     return (
       <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 space-y-4 ">
-        <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 space-y-4 mt-20">
+        <div className="bg-[#16202a] flex flex-col items-center justify-start min-h-screen bg-gray-100 space-y-4 mt-20">
         <ViewTicketsButton />
         <CreateTicketButton />
         <ViewArchivedTicketsButtom />

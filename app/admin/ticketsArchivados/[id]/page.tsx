@@ -7,6 +7,9 @@ import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { GET_INSTITUTIONS_QUERY, GET_TICKETS_ARCHIVED_BY_USER_ID_QUERY, TEST_GET_ALL_TICKETS_QUERY } from "@/apollo/queries";
 import { useSearchParams, useParams, ReadonlyURLSearchParams } from 'next/navigation';
+import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
+
+
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -67,6 +70,8 @@ function TicketsPage() {
     //console.log('idNumber:', idNumber)
     const sorted = useSearchParams();
     const email = sorted.get("email") || "";
+    const firstName = sorted.get("firstName") || "";
+    const lastName = sorted.get("lastName") || "";
 
     const { loading, error, data, refetch } = useQuery(GET_TICKETS_ARCHIVED_BY_USER_ID_QUERY, {
         variables: { userId: idNumber },
@@ -102,14 +107,14 @@ function TicketsPage() {
 
     return (
         <div>
-            <input type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
-            <select value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
+            <input className="bg-[#16202a] text-white" type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
+            <select className="bg-[#16202a] text-white" value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
                 <option value="">All</option>
                 <option value={TicketStatus.OPEN}>Open</option>
                 <option value={TicketStatus.IN_PROGRESS}>In Progress</option>
                 <option value={TicketStatus.CLOSED}>Closed</option>
             </select>
-            <select value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
+            <select className="bg-[#16202a] text-white" value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
                 <option value={0}>All Institutions</option>
                 {dataInstitutions?.institutions?.map((institution: Institution) => (
                     <option key={institution.id} value={institution.id}>{institution.name}</option>
@@ -119,7 +124,8 @@ function TicketsPage() {
                 <p>Usted no tiene tickets aún.</p>
             ) : (
                 <DataTable
-                    title="Tickets"
+                    customStyles={tableCustomStyles}
+                    title={`Tickets archivados de ${firstName} ${lastName}`}
                     columns={columns}
                     data={filteredTickets}
                     pagination

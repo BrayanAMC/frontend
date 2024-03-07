@@ -66,25 +66,25 @@ export default function Navbar() {
     }
   }
   return (
-    <div className='p-4 flex justify-between items-center'>
-      <Link href="/">D.A.E.M App</Link>
+    <div className='p-4 flex justify-between items-center bg-[#8493A8]' >
+      <Link href="/" className='text-white'>D.A.E.M App</Link>
 
       <div className='flex'>
         {isUserLoggedIn ? (
           <>
             <Link href={getDashboardLink()} className='mr-4'>
-              <h1>Dashboard</h1>
+              <h1  className='text-white'>Dashboard</h1>
             </Link>
             <Link href="/myaccount" className='mr-4'>
-              <h1>My Account</h1>
+              <h1  className='text-white'>My Account</h1>
             </Link>
             <button onClick={handleLogout}>
-              <h1>Logout</h1>
+              <h1  className='text-white'>Logout</h1>
             </button>
           </>
         ) : (
           <Link href="/auth/login">
-            <h1>Login</h1>
+            <h1 className='text-white'>Login</h1>
           </Link>
         )}
       </div>

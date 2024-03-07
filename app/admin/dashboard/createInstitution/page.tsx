@@ -2,7 +2,7 @@ import CreateInstitutionForm from "@/components/superAdmin/createInstitution/Cre
 
 function CreateInstitutionPage() {
   return (
-    <div>
+    <div className="bg-[#16202a]">
         
       <CreateInstitutionForm />
     </div>

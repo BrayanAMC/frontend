@@ -4,7 +4,7 @@ function ViewTicketsButton() {
 
     return (
         <Link href="dashboard/tickets">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Ver tickets</button>
+          <button className="w-full h-full bg-[#26313c] hover:bg-green-700 text-white font-bold p-12 rounded flex items-center justify-center text-2xl shadow-lg">Ver tickets</button>
         </Link>
       );
 }

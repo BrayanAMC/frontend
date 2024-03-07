@@ -4,12 +4,15 @@ import { GET_INSTITUTIONS_QUERY, GET_USERS_QUERY } from "@/apollo/queries";
 import UserCard from "@/components/superAdmin/dashboard/UserCard";
 import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
-
+import '@/styles/datatable.css';
+import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
 export enum RoleStatus {
     ADMIN = "admin",
     SUPER_ADMIN = "superadmin",
     USER = "user",
 }
+
+
 
 interface User {
     id: number;
@@ -85,14 +88,14 @@ function UsersPage() {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error</p>;
     return (
-        <div>
-            <select value={roleFilter || ''} onChange={e => setRoleFilter(e.target.value as RoleStatus)}>
+        <div className="bg-[#16202a]">
+            <select value={roleFilter || ''} onChange={e => setRoleFilter(e.target.value as RoleStatus)} className="bg-[#16202a] text-white" title="roleFilter">
                 <option value={''}>All Roles</option>
                 <option value={RoleStatus.ADMIN}>Admin</option>
                 <option value={RoleStatus.SUPER_ADMIN}>Super Admin</option>
                 <option value={RoleStatus.USER}>User</option>
             </select>    
-            <select value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
+            <select value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)} className="bg-[#16202a] text-white" title="institutionFilterddd">
                 <option value={0}>All Institutions</option>
                 {dataInstitutions?.institutions?.map((institution: Institution) => (
                     <option value={institution.id}>{institution.name}</option>
@@ -102,7 +105,8 @@ function UsersPage() {
             {filteredUsers.length === 0 ? (
                 <p>No hay coincidencias</p>
             ) : (
-                <DataTable
+                <DataTable 
+                    customStyles={tableCustomStyles}
                     title="Users"
                     columns={columns}
                     data={filteredUsers}

@@ -4,6 +4,8 @@ import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider }
 import InstitutionCard from "@/components/superAdmin/viewInstitutions/InstitutionCard/InstitutionCard";
 import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
+import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
+
 
 interface Institution {
     id: number;
@@ -54,11 +56,12 @@ function InstitutionsPage(){
     if (error) return <p>Error</p>;
     return (
         <div>
-            <input type="text" value={searchValue} onChange={e => setSearchValue(e.target.value)} />
+            <input placeholder="escriba una coincidencia" className="bg-[#16202a] text-white" type="text" value={searchValue} onChange={e => setSearchValue(e.target.value)} />
             {filteredInstitutions.length === 0 ? (
                 <p>Usted no tiene tickets aún.</p>
             ) : (
                 <DataTable
+                    customStyles={tableCustomStyles}
                     title="Institutions"
                     columns={columns}
                     data={filteredInstitutions}

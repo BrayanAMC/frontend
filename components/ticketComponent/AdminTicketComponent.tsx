@@ -313,16 +313,16 @@ function AdminTicketComponent() {
   //await loadTicket(params.ticketId);
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 ">
-      <div className=" relative p-8 bg-white rounded shadow-md w-1/2 mt-12">
+    <div className="flex flex-col items-center justify-start min-h-screenbg-[#16202a] ">
+      <div className=" relative p-8 bg-[#26313c] rounded shadow-md w-1/2 mt-12">
 
-        <Label>Subject</Label>
-        <h2 className="text-xl font-semibold mb-2 break-words overflow-auto">{subject}</h2>
+        <Label className="text-white">Subject</Label>
+        <h2 className="text-xl text-white font-semibold mb-2 break-words overflow-auto">{subject}</h2>
         <hr className="my-4 border-gray-200" />
-        <Label>Description</Label>
-        <p className="mb-4 break-words overflow-auto">{description}</p>
+        <Label className="text-white">Description</Label>
+        <p className="mb-4 break-words overflow-auto text-white">{description}</p>
         <hr className="my-4 border-gray-200" />
-        <p className="mb-4">{createdAt}</p>
+        <p className="mb-4 text-white">{createdAt}</p>
 
         <span
           className={`inline-block px-3 py-1 rounded text-white ${status === "OPEN"
@@ -350,12 +350,14 @@ function AdminTicketComponent() {
 
               <div className="mb-6 mt-4">
                 <Input
+                  className="text-white"
                   value={subject || ""}
                   onChange={(e) => setSubject(e.target.value)}
                 />
               </div>
               <div className="mb-6">
                 <Input
+                  className="text-white"
                   value={description || ""}
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -426,12 +428,12 @@ function AdminTicketComponent() {
                   Crear reporte
                 </button>)}
 
-              <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-                <form onSubmit={handleSubmit} className="p-6 bg-white rounded shadow-md" style={{ maxWidth: '600px', width: '100%' }}>
+              <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} className="flex flex-col items-center justify-center min-h-screen bg-[#16202a]">
+                <form onSubmit={handleSubmit} className="p-6 bg-[#26313c] rounded shadow-md" style={{ maxWidth: '600px', width: '100%' }}>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Nombre
                     </Label>
@@ -442,13 +444,13 @@ function AdminTicketComponent() {
                       id="nombre"
                       type="text"
                       maxLength={22}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className=" bg-[#26313c] text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                   </div>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Localidad
                     </Label>
@@ -459,13 +461,13 @@ function AdminTicketComponent() {
                       id="localidad"
                       type="text"
                       maxLength={30}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className=" text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     />
                   </div>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Fecha
                     </Label>
@@ -475,12 +477,12 @@ function AdminTicketComponent() {
                       onChange={(e) => setFecha(e.target.value)}
                       id="fecha"
                       type="date"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className="text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     /></div>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Tipo de visita
                     </Label>
@@ -491,12 +493,12 @@ function AdminTicketComponent() {
                       id="tipoDeVisita"
                       type="text"
                       maxLength={30}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className="text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     /></div>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Problema encontrado
                     </Label>
@@ -507,12 +509,12 @@ function AdminTicketComponent() {
                       id="problemaEncontrado"
                       type="text"
                       maxLength={30}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className="text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     /></div>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Detalle del problema
                     </Label>
@@ -522,12 +524,12 @@ function AdminTicketComponent() {
                       id="detalleProblema"
                       type="text"
                       maxLength={30}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className="text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     /></div>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Trabajo realizado
                     </Label>
@@ -538,12 +540,12 @@ function AdminTicketComponent() {
                       id="trabajoRealizado"
                       type="text"
                       maxLength={30}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className="text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     /></div>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Detalle del trabajo
                     </Label>
@@ -553,24 +555,25 @@ function AdminTicketComponent() {
                       id="detalleTrabajo"
                       type="text"
                       maxLength={30}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className="text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     /></div>
                   <div >
                     <Label
                       htmlFor="subject"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-white"
                     >
                       Observaciones
                     </Label>
                     <Input
+                    
                       value={observaciones}
                       onChange={(e) => setObservaciones(e.target.value)}
                       id="observaciones"
                       type="text"
                       maxLength={30}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      className="text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     /></div>
-                  <button type="submit">Enviar</button>
+                  <button className="mt-6  bg-[#16202a] text-white font-bold py-2 px-4 rounded" type="submit">Enviar</button>
                 </form>
               </Modal>
             </div>

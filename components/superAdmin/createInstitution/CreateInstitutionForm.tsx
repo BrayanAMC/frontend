@@ -57,11 +57,11 @@ function CreateInstitutionForm(){
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <form onSubmit={handleSubmit} className="p-6 bg-white rounded shadow-md">
-                <div className="flex flex-col space-y-4">
-                    <div>
-                        <Label htmlFor="subject" className="block text-sm font-medium text-gray-700">nombre</Label>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#16202a]">
+            <form onSubmit={handleSubmit} className="p-6 rounded shadow-md bg-[#26313c] ">
+                <div className="flex flex-col space-y-4 bg-[#26313c] text-white">
+                    <div className="bg-[#26313c] ">
+                        <Label htmlFor="subject" className="block text-sm font-medium text-white-700">nombre</Label>
                         <Input
                             required
                             value={name}
@@ -73,7 +73,7 @@ function CreateInstitutionForm(){
                         />
                     </div>
                     <div>
-                        <Label htmlFor="description" className="block text-sm font-medium text-gray-700">email</Label>
+                        <Label htmlFor="description" className="block text-sm font-medium text-white-700">email</Label>
                         <Input
                             required
                             value={email}
@@ -85,7 +85,7 @@ function CreateInstitutionForm(){
                         />
                     </div>
                     <div>
-                        <Label htmlFor="subject" className="block text-sm font-medium text-gray-700">numero de telefono</Label>
+                        <Label htmlFor="subject" className="block text-sm font-medium text-white-700">numero de telefono</Label>
                         <Input
                             required
                             value={phoneNumber}
@@ -97,7 +97,7 @@ function CreateInstitutionForm(){
                         />
                     </div>
                 </div>
-                <Button type="submit" className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</Button>
+                <Button type="submit" className="mt-6  bg-[#16202a] text-white font-bold py-2 px-4 rounded">Submit</Button>
             </form>
         </div>
     );

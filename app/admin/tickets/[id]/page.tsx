@@ -99,9 +99,12 @@ function TicketPages() {
 
 'use client'
 import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider } from "@apollo/client"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import DataTable from 'react-data-table-component';
-import { GET_INSTITUTIONS_QUERY, TEST_GET_ALL_TICKETS_QUERY } from "@/apollo/queries";
+import { GET_INSTITUTIONS_QUERY, GET_TICKETS_BY_USER_ID_QUERY } from "@/apollo/queries";
+import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
+import { useSearchParams, useParams, ReadonlyURLSearchParams } from 'next/navigation';
+
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -151,14 +154,21 @@ const client = new ApolloClient({
 });
 
 function TicketsPage() {
+    const { id } = useParams();
+    const userId = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del usuario dueño del ticket
+    const firstName = useSearchParams().get("firstName");
+    const lastName = useSearchParams().get("lastName");
 
     const [statusFilter, setStatusFilter] = useState<TicketStatus | null>(null);
     const [dateFilter, setDateFilter] = useState<Date | null>(null);
     const [institutionFilter, setInstitutionFilter] = useState(0);
 
-    const { loading, error, data, refetch } = useQuery(TEST_GET_ALL_TICKETS_QUERY)
+    const { loading, error, data, refetch } = useQuery(GET_TICKETS_BY_USER_ID_QUERY, {
+        variables: { userId: userId },
+        skip: userId === null
+    });
     //console.log('data', data)
-    const tickets = data?.testingTickets || [];
+    const tickets = data?.getTicketsByUserId || [];
     //console.log('tickets:', tickets)
 
     const filteredTickets = tickets.filter((ticket: Ticket) => {
@@ -187,14 +197,14 @@ function TicketsPage() {
 
     return (
         <div>
-            <input type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
-            <select value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
+            <input  className="bg-[#16202a] text-white" type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
+            <select  className="bg-[#16202a] text-white" value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
                 <option value="">All</option>
                 <option value={TicketStatus.OPEN}>Open</option>
                 <option value={TicketStatus.IN_PROGRESS}>In Progress</option>
                 <option value={TicketStatus.CLOSED}>Closed</option>
             </select>
-            <select value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
+            <select className="bg-[#16202a] text-white" value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
                 <option value={0}>All Institutions</option>
                 {dataInstitutions?.institutions?.map((institution: Institution) => (
                     <option value={institution.id}>{institution.name}</option>
@@ -204,7 +214,8 @@ function TicketsPage() {
                 <p>Usted no tiene tickets aún.</p>
             ) : (
                 <DataTable
-                    title="Tickets"
+                    customStyles={tableCustomStyles}
+                    title={`Tickets de  ${firstName} ${lastName}`} 
                     columns={columns}
                     data={filteredTickets}
                     pagination

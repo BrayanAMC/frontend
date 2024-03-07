@@ -69,25 +69,28 @@ function InstitutionPage() {
   
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 ">
-      <div className="relative p-8 bg-white rounded shadow-md w-1/2 mt-12">
-        <h1 className="text-2xl font-bold mb-4">{originalName}</h1>
-        <h2 className="mb-4">{email}</h2>
-        <h2 className="mb-4">{phoneNumber}</h2>
+    <div className="flex flex-col items-center justify-start min-h-screen bg-[#16202a]  ">
+      <div className="relative p-8 bg-[#26313c] rounded shadow-md w-1/2 mt-12">
+        <h1 className="text-white text-2xl font-bold mb-4">{originalName}</h1>
+        <h2 className="mb-4 text-white">{email}</h2>
+        <h2 className="mb-4 text-white">{phoneNumber}</h2>
         <></>
         <div className="mb-6">
           <Input 
+            className="text-white"
             value={name || ""} 
             onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="mb-6">
           <Input
+            className="text-white"
             value={email || ""}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-6 ">
           <Input
+            className="text-white"
             value={phoneNumber || ""}
             onChange={(e) => setPhoneNumber(e.target.value)}
           />

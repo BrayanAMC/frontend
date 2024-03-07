@@ -83,27 +83,27 @@ function UserPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 ">
-      <div className="relative p-8 bg-white rounded shadow-md w-1/2 mt-12">
-        <h1 className="text-2xl font-bold mb-4">
+    <div className="flex flex-col items-center justify-start min-h-screen bg-[#16202a] ">
+      <div className="relative p-8 bg-[#26313c] rounded shadow-md w-1/2 mt-12">
+        <h1 className="text-2xl font-bold mb-4 text-white">
           {firstName} {lastName}
         </h1>
-        <h2 className="mb-4">{email}</h2>
+        <h2 className="mb-4 text-white">{email}</h2>
         {/*<h2 className="mb-4">{role}</h2>*/}
         <></>
-        <div className="mb-6">
+        <div className="mb-6 text-white">
           <Input
             value={firstName || ""}
             onChange={(e) => setFirstName(e.target.value)}
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-6 text-white">
           <Input
             value={lastName || ""}
             onChange={(e) => setLastName(e.target.value)}
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-6 text-white">
           <Input
             value={email || ""}
             onChange={(e) => setEmail(e.target.value)}
@@ -128,14 +128,14 @@ function UserPage() {
             </button>
           </div>
           <div className="mb-10">
-          <Link href={`/admin/tickets/${id}`}>
+          <Link href={`/admin/tickets/${id}?firstName=${firstName}&lastName=${lastName}`}>
             <button className="absolute bottom-0 right-0 mb-4 mr-28 p-2 bg-green-500 text-white rounded-full">
               Ver Tickets
             </button>
           </Link>
         </div>
         <div className="mb-10">
-          <Link href={`/admin/ticketsArchivados/${id}?email=${email}`}>
+          <Link href={`/admin/ticketsArchivados/${id}?email=${email}&firstName=${firstName}&lastName=${lastName}`}>
             <button className="absolute bottom-0 right-0 mb-4 mr-56 p-2 bg-red-500 text-white rounded-full">
               Ver Tickets archivados
             </button>

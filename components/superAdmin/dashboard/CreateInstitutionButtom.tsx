@@ -8,7 +8,7 @@ interface CreateInstitutionButtomProps {
 const CreateInstitutionButtom: React.FC<CreateInstitutionButtomProps> = ({ href }) => {
   return (
       <Link href={href}>
-        <button className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">crear institucion</button>
+        <button className="w-full h-full bg-[#26313c] hover:bg-orange-700 text-white font-bold p-12 rounded flex items-center justify-center text-2xl shadow-lg">crear institucion</button>
       </Link>
     );
 }

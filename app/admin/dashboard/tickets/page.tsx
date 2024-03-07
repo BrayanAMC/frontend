@@ -198,6 +198,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider }
 import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { GET_INSTITUTIONS_QUERY, TEST_GET_ALL_TICKETS_QUERY } from "@/apollo/queries";
+import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -287,20 +288,20 @@ function TestTicketsPage() {
 
     return (
         <div>
-            <input type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
-            <select value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
+            <input className="bg-[#16202a] text-white" type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
+            <select className="bg-[#16202a] text-white" value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
                 <option value="">All</option>
                 <option value={TicketStatus.OPEN}>Open</option>
                 <option value={TicketStatus.IN_PROGRESS}>In Progress</option>
                 <option value={TicketStatus.CLOSED}>Closed</option>
             </select>
-            <select value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
+            <select className="bg-[#16202a] text-white" value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
                 <option value={0}>All Institutions</option>
                 {dataInstitutions?.institutions?.map((institution: Institution) => (
                     <option value={institution.id}>{institution.name}</option>
                 ))}
             </select>
-            <select value={archivedFilter === null ? '' : archivedFilter.toString()} onChange={e => setArchivedFilter(e.target.value === '' ? null : e.target.value === 'true')}>
+            <select className="bg-[#16202a] text-white" value={archivedFilter === null ? '' : archivedFilter.toString()} onChange={e => setArchivedFilter(e.target.value === '' ? null : e.target.value === 'true')}>
                 <option value="">Todos</option>
                 <option value="true">Archivados</option>
                 <option value="false">No Archivados</option>
@@ -309,6 +310,7 @@ function TestTicketsPage() {
                 <p>Usted no tiene tickets aún.</p>
             ) : (
                 <DataTable
+                    customStyles={tableCustomStyles}
                     title="Tickets"
                     columns={columns}
                     data={filteredTickets}
