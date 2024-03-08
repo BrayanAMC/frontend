@@ -77,6 +77,18 @@ export const GET_REPORT_QUERY = gql`
   }
 `;
 
+export const GET_INSTITUTION_QUERY = gql`
+  query GetInstitution($id: Int!) {
+    institution(id: $id) {
+      id
+      name
+      email
+      phoneNumber
+    }
+  }
+`;
+
+
 export const GET_ALL_TICKETS_QUERY = gql`
   query GetAllTickets($ticketsInput: TicketsInput!) {
     tickets(TicketsInput: $ticketsInput) {
