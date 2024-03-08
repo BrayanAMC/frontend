@@ -122,8 +122,9 @@ function RegisterForm() {
 
       <form onSubmit={onSubmit} className="space-y-8">
         <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="firstName">Nombre</Label>
+          <Label  className="text-white" htmlFor="firstName">Nombre</Label>
           <Input
+            className="bg-[#26313c] text-white"
             required
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -132,8 +133,9 @@ function RegisterForm() {
           />
         </div>
         <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="lastName">Apellido</Label>
+          <Label className="text-white" htmlFor="lastName">Apellido</Label>
           <Input
+            className="bg-[#26313c] text-white"
             required
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -142,8 +144,9 @@ function RegisterForm() {
           />
         </div>
         <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="email">Email</Label>
+          <Label className="text-white" htmlFor="email">Email</Label>
           <Input
+            className="bg-[#26313c] text-white"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -153,8 +156,9 @@ function RegisterForm() {
         </div>
 
         <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="password">Contraseña</Label>
+          <Label className="text-white" htmlFor="password">Contraseña</Label>
           <Input
+            className="bg-[#26313c] text-white"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -163,21 +167,23 @@ function RegisterForm() {
           />
         </div>
         <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="role">Rol</Label>
+          <Label className="text-white" htmlFor="role">Rol</Label>
           <select
+            className="bg-[#26313c] text-white"
             required
             value={role}
             onChange={(e) => setRole(e.target.value)}
             id="role"
           >
-            <option value="user">Usuario</option>
-            <option value="admin">Administrador</option>
+            <option className="text-white" value="user">Usuario</option>
+            <option value="admin text-white">Administrador</option>
           </select>
         </div>
         {role === "user" && (
   <div className="grid w-full items-center gap-1.5">
-    <Label htmlFor="institution">Institución</Label>
+    <Label className="text-white" htmlFor="institution">Institución</Label>
     <select
+      className="bg-[#26313c] text-white"
       required
       value={institution}
       onChange={(e) => setInstitution(e.target.value)}

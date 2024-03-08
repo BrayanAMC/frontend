@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useSearchParams, useParams } from "next/navigation";
 import {
   ApolloClient,
@@ -12,6 +12,8 @@ import { UPDATE_USER_MUTATION } from "@/apollo/mutation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import Link from 'next/link';
+import { useEffect } from 'react';
+
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3002/graphql",
@@ -23,6 +25,8 @@ const client = new ApolloClient({
 });
 
 function UserPage() {
+
+  const router = useRouter();
   
   const { id } = useParams();
   const sorted = useSearchParams();
@@ -42,6 +46,8 @@ function UserPage() {
   const [updateUser] = useMutation(UPDATE_USER_MUTATION, {
     client,
   });
+
+  
 
   const handleDelete = async (e: React.FormEvent) => {
     //const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
@@ -74,7 +80,12 @@ function UserPage() {
     console.log("datos de la api handleEdit [id]: ", data);
     if (data?.updateUser?.id) {
       alert("User updated successfully");
-      window.location.href = "/admin/dashboard";
+      //window.location.href = "/admin/dashboard";
+      setFirstName(data?.updateUser?.firstName);
+      setLastName(data?.updateUser?.lastName);
+      setEmail(data?.updateUser?.email);
+      const newUrl = `/admin/dashboard/users/${data.updateUser.id}?firstName=${encodeURIComponent(firstName ?? '')}&lastName=${encodeURIComponent(lastName ?? '')}&email=${encodeURIComponent(email ?? '')}&role=${encodeURIComponent(role ?? '')}&institutionId=${encodeURIComponent(institutionId ?? '')}`;
+      router.replace(newUrl);
     }
   };
 

@@ -207,7 +207,7 @@ function TicketsPage() {
             <select className="bg-[#16202a] text-white" value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
                 <option value={0}>All Institutions</option>
                 {dataInstitutions?.institutions?.map((institution: Institution) => (
-                    <option value={institution.id}>{institution.name}</option>
+                    <option key={institution.id} value={institution.id}>{institution.name}</option>
                 ))}
             </select>
             {filteredTickets.length === 0 ? (

@@ -79,30 +79,31 @@ function TicketForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100" >
-      <form onSubmit={handleSubmit} className="p-6 bg-white rounded shadow-md" style={{ maxWidth: '600px', width: '100%' }}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#16202a]" >
+      <form onSubmit={handleSubmit} className="p-6 bg-[#26313c] rounded shadow-md" style={{ maxWidth: '600px', width: '100%' }}>
         <div className="flex flex-col space-y-4 " >
           <div >
             <Label
               htmlFor="subject"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-white"
             >
               Subject
             </Label>
             <Input
+              
               required
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               id="subject"
               type="text"
               maxLength={100}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="bg-[#16202a] text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
           </div>
           <div>
             <Label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-white"
             >
               Description
             </Label>
@@ -113,13 +114,13 @@ function TicketForm() {
               id="description"
               rows={5} // Ajusta esto para cambiar la altura
               maxLength={300} // Limita la entrada a 500 caracteres
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="bg-[#16202a] text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
           </div>
         </div>
         <Button
           type="submit"
-          className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="mt-6 bg-[#16202a] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Submit
         </Button>

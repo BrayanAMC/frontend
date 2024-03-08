@@ -15,6 +15,7 @@
 }*/
 "use client";
 //if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#__next')
+import { useRouter } from 'next/navigation';
 import {
   useSearchParams,
   useParams,
@@ -43,6 +44,7 @@ const client = new ApolloClient({
 });
 
 function AdminTicketComponent() {
+  const router = useRouter();
   const { id } = useParams(); //id del ticket
   //if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#__next')
   useEffect(() => {
@@ -135,7 +137,7 @@ function AdminTicketComponent() {
       const { data } = await deleteTicket({
         variables: { id: idNumber },
       });
-      console.log("datos de la api llamada [id]: ", data);
+      //console.log("datos de la api llamada [id]: ", data);
       if (data?.deleteTicket.success) {
         alert("Ticket eliminado correctamente.");
         window.location.href = "/dashboard/tickets";
@@ -157,10 +159,16 @@ function AdminTicketComponent() {
         },
       },
     });
-    console.log("data update ticket ", data);
+    //console.log("data update ticket ", data);
     if (data?.updateTicket.id) {
       alert("Ticket updated successfully");
-      window.location.href = `/admin/tickets/${userId}`;
+      setSubject(data?.updateTicket.subject);
+      setDescription(data?.updateTicket.description);
+      const newUrl = `/admin/tickets/ticket/${userId}?subject=${encodeURIComponent(subject ?? '')}&description=${encodeURIComponent(description ?? '')}&status=${encodeURIComponent(status ?? '')}&createdAt=${encodeURIComponent(createdAt ?? '')}&userId=${encodeURIComponent(userId ?? '')}&archived=${encodeURIComponent(archived ?? '')}`;
+      router.replace(newUrl);
+      //window.location.href = `/admin/tickets/${userId}`;
+
+
     }
   };
 

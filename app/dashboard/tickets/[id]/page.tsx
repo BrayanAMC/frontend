@@ -190,26 +190,26 @@ function TicketPage() {
   //await loadTicket(params.ticketId);
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 ">
-      <div className=" relative p-8 bg-white rounded shadow-md w-1/2 mt-12">
-        <h1 className="text-2xl font-bold mb-4">
+    <div className="flex flex-col items-center justify-start min-h-screen bg-[#16202a] ">
+      <div className=" relative p-8 bg-[#26313c] rounded shadow-md w-1/2 mt-12">
+        <h1 className=" text-white text-2xl font-bold mb-4">
           {firstNameUser} {lastNameUser}
         </h1>
-        <p className="mb-4">{emailUser}</p>
+        <p className="mb-4 text-white ">{emailUser}</p>
         <hr className="my-4 border-gray-200" />
-        <Label>Subject</Label>
-        <h2 className="text-xl font-semibold mb-2 break-words overflow-auto">
+        <Label className="text-white">Subject</Label>
+        <h2 className="text-white text-xl font-semibold mb-2 break-words overflow-auto">
           {subject}
         </h2>
         <hr className="my-4 border-gray-200" />
-        <Label>Description</Label>
-        <p className="mb-4 break-words overflow-auto">{description}</p>
+        <Label className="text-white">Description</Label>
+        <p className="text-white mb-4 break-words overflow-auto">{description}</p>
         <hr className="my-4 border-gray-200" />
-        <Label>Fecha de creacion</Label>
-        <p className="mb-4">{createdAt}</p>
+        <Label className="text-white">Fecha de creacion</Label>
+        <p className="mb-4 text-white">{createdAt}</p>
         <hr className="my-4 border-gray-200" />
         <div className="inline-flex flex-col ">
-          <Label className="mb-2">Status</Label>
+          <Label className="mb-2 text-white">Status</Label>
           <span
             className={`inline-block px-3 py-1 rounded text-white ${status === "OPEN"
               ? "bg-green-500"
@@ -232,11 +232,12 @@ function TicketPage() {
             <div>
               <Label
                 htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-white mb-2"
               >
                 Subject
               </Label>
               <Input
+                className="bg-[#16202a] text-white"
                 value={subject || ""}
                 onChange={(e) => setSubject(e.target.value)}
                 maxLength={100} // Limita la entrada a 100 caracteres
@@ -249,12 +250,13 @@ function TicketPage() {
             <div>
               <Label
                 htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-white mb-2"
               >
                 Description
               </Label>
               <textarea
-                className="w-full"
+                
+                className="w-full text-white bg-[#16202a]"
                 value={description || ""}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={5} // Ajusta esto para cambiar la altura

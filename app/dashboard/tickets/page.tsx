@@ -5,6 +5,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider }
 import { gql } from "@apollo/client";
 import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
+import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -101,8 +102,8 @@ function TicketPages() {
     //if (error) return <p>Error</p>;
     return (
         <div>
-            <input type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
-            <select value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
+            <input className="bg-[#16202a] text-white" type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
+            <select className="bg-[#16202a] text-white" value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
                 <option value="">All</option>
                 <option value={TicketStatus.OPEN}>Open</option>
                 <option value={TicketStatus.IN_PROGRESS}>In Progress</option>
@@ -112,6 +113,7 @@ function TicketPages() {
                 <p>Usted no tiene tickets aún.</p>
             ) : (
                 <DataTable
+                customStyles={tableCustomStyles}
                     title="Tickets"
                     columns={columns}
                     data={filteredTickets}
