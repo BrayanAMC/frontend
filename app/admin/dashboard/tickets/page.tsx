@@ -53,7 +53,9 @@ function TestTicketsPage() {
     let [reportIdInt, setReportIdInt] = useState<number | null>(null);
 
     const [statusFilter, setStatusFilter] = useState<TicketStatus | null>(null);
-    const [dateFilter, setDateFilter] = useState<Date | null>(null);
+    //const [dateFilter, setDateFilter] = useState<Date | null>(null);
+    const [startDateFilter, setStartDateFilter] = useState<Date | null>(null);
+    const [endDateFilter, setEndDateFilter] = useState<Date | null>(null);
     const [institutionFilter, setInstitutionFilter] = useState(0);
     const [archivedFilter, setArchivedFilter] = useState<boolean | null>(null);
 
@@ -66,8 +68,30 @@ function TestTicketsPage() {
         if (statusFilter && ticket.status !== statusFilter) {
             return false;
         }
-        if (dateFilter && new Date(ticket.createdAt) < dateFilter) {
+        /*if (dateFilter && new Date(ticket.createdAt) < dateFilter) {
             return false;
+        }*/
+        if (startDateFilter) {
+            console.log('startDateFilter:', startDateFilter)
+            //let startOfDay = new Date(startDateFilter)
+            //startOfDay.setHours(0,0,0,0);
+            //let filterData = new Date(startDateFilter).setHours(0, 0, 0, 0);
+            const ticketDate = new Date(ticket.createdAt)
+            if (ticketDate < startDateFilter) {
+                return false;
+            }
+        }
+        if (endDateFilter) {
+            console.log('endDateFilter:', endDateFilter)
+            endDateFilter.setHours(23, 59, 59, 999);
+            console.log('endDateFilter despues de setHours:', endDateFilter)
+            //let endOfDay = new Date(endDateFilter)
+            //endOfDay.setHours(23, 59, 59, 999);
+            const ticketDate = new Date(ticket.createdAt)
+            //ticketDate.setHours(23, 59, 59, 999);
+            if (ticketDate > endDateFilter) {
+                return false;
+            }
         }
 
         if (institutionFilter && ticket.institutionId !== institutionFilter) {
@@ -100,7 +124,7 @@ function TestTicketsPage() {
         { name: 'Subject', selector: (row: Ticket) => row.subject, sortable: true },
         { name: 'Description', selector: (row: Ticket) => row.description, sortable: true },
         { name: 'Status', selector: (row: Ticket) => row.status, sortable: true },
-        { name: 'Created At', selector: (row: Ticket) => row.createdAt, sortable: true },
+        { name: 'Created At', selector: (row: Ticket) => new Date(row.createdAt).toLocaleDateString().substr(0, 10), sortable: true },
         {
             name: 'Descargar informe',
             cell: (row: Ticket) => {
@@ -167,7 +191,9 @@ function TestTicketsPage() {
 
     return (
         <div>
-            <input className="bg-[#16202a] text-white" type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />
+            {/*<input className="bg-[#16202a] text-white" type="date" value={dateFilter ? dateFilter.toISOString().substr(0, 10) : ''} onChange={e => setDateFilter(e.target.value ? new Date(e.target.value) : null)} />*/}
+            <input className="bg-[#16202a] text-white" type="date" value={startDateFilter ? new Date(startDateFilter.getTime() - startDateFilter.getTimezoneOffset() * 60000).toISOString().substr(0, 10) : ''} onChange={e => setStartDateFilter(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)} />
+            <input className="bg-[#16202a] text-white" type="date" value={endDateFilter ? new Date(endDateFilter.getTime() - endDateFilter.getTimezoneOffset() * 60000).toISOString().substr(0, 10) : ''} onChange={e => setEndDateFilter(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)} />
             <select className="bg-[#16202a] text-white" value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as TicketStatus)}>
                 <option value="">All</option>
                 <option value={TicketStatus.OPEN}>Open</option>
