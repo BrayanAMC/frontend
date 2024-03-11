@@ -33,6 +33,9 @@ import { Label } from "@/components/ui/label";
 import Modal from 'react-modal';
 import jsPDF from "jspdf";
 import { generateReport } from '@/components/generateReport/generateReport';
+import queryString from 'query-string';
+
+
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3002/graphql",
@@ -46,6 +49,7 @@ const client = new ApolloClient({
 function AdminTicketComponent() {
   const router = useRouter();
   const { id } = useParams(); //id del ticket
+  
   //if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#__next')
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -173,6 +177,7 @@ function AdminTicketComponent() {
   };
 
   const handleInProgress = async (e: React.FormEvent) => {
+    const url = new URL(window.location.href);
     const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
     const userIdNumber = parseInt(Array.isArray(userId) ? userId[0] : userId, 10);
     const adminUserIdNumber = parseInt(Array.isArray(adminUserId) ? adminUserId[0] : adminUserId, 10);
@@ -191,11 +196,17 @@ function AdminTicketComponent() {
     console.log("data changeStatusToInProgress ", data);
     if (data?.changeStatusToInProgress.success) {
       alert("Ticket updated successfully");
-      window.location.href = `/admin/tickets/${userId}`;
+      //cambiar el estado de la url a IN_PROGRESS
+      const searchParams = new URLSearchParams(url.search);
+      searchParams.set('status', 'IN_PROGRESS');
+      url.search = searchParams.toString();
+      window.history.replaceState({}, '', url.toString());
+      window.location.reload();
     }
   };
 
   const handleClosed = async (e: React.FormEvent) => {
+    const url = new URL(window.location.href);
     console.log("en funcion handleClosed");
     const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
     const userIdNumber = parseInt(Array.isArray(userId) ? userId[0] : userId, 10);
@@ -215,7 +226,11 @@ function AdminTicketComponent() {
     //console.log("data changeStatusToClosed ", data);
     if (data?.changeStatusToClosed.success) {
       alert("Ticket updated successfully");
-      window.location.href = `/admin/tickets/${userId}`;
+      const searchParams = new URLSearchParams(url.search);
+      searchParams.set('status', 'CLOSED');
+      url.search = searchParams.toString();
+      window.history.replaceState({}, '', url.toString());
+      window.location.reload();
     }
   }
 

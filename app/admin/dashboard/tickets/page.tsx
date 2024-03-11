@@ -3,7 +3,10 @@ import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider }
 import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { GET_INSTITUTIONS_QUERY, TEST_GET_ALL_TICKETS_QUERY } from "@/apollo/queries";
-import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
+import { tableCustomStyles } from '@/components/tableComponent/tableStylesComponent';
+import { generateReport } from '@/components/generateReport/generateReport';
+import { GET_REPORT_QUERY } from "@/apollo/queries";
+import { Button } from "@/components/ui/button"
 
 export enum TicketStatus {
     OPEN = "OPEN",
@@ -34,14 +37,7 @@ interface Institution {
 
 }
 
-const columns = [
-    { name: 'ID', selector: (row: Ticket) => row.id, sortable: true },
-    { name: 'Subject', selector: (row: Ticket) => row.subject, sortable: true },
-    { name: 'Description', selector: (row: Ticket) => row.description, sortable: true },
-    { name: 'Status', selector: (row: Ticket) => row.status, sortable: true },
-    { name: 'Created At', selector: (row: Ticket) => row.createdAt, sortable: true },
-    // Agrega aquí las demás columnas que necesites
-];
+
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:3002/graphql',
@@ -53,6 +49,8 @@ const client = new ApolloClient({
 });
 
 function TestTicketsPage() {
+
+    let [reportIdInt, setReportIdInt] = useState<number | null>(null);
 
     const [statusFilter, setStatusFilter] = useState<TicketStatus | null>(null);
     const [dateFilter, setDateFilter] = useState<Date | null>(null);
@@ -88,8 +86,84 @@ function TestTicketsPage() {
 
         },
     });
+    //console.log('dataInstitutions:', dataInstitutions)
 
-    if (loading) return <p>Loading...</p>;
+    const columns = [
+        {
+            name: 'Institution',
+            cell: (row: Ticket) => {
+                const institution = dataInstitutions?.institutions?.find((institution: Institution) => String(institution.id) === String(row.institutionId));
+                return institution ? institution.name : 'N/A';
+            },
+            sortable: true
+        },
+        { name: 'Subject', selector: (row: Ticket) => row.subject, sortable: true },
+        { name: 'Description', selector: (row: Ticket) => row.description, sortable: true },
+        { name: 'Status', selector: (row: Ticket) => row.status, sortable: true },
+        { name: 'Created At', selector: (row: Ticket) => row.createdAt, sortable: true },
+        {
+            name: 'Descargar informe',
+            cell: (row: Ticket) => {
+                const reportIdFromStorage = localStorage.getItem(`reportIdForTicket${row.id}`) ? parseInt(localStorage.getItem(`reportIdForTicket${row.id}`) as string, 10) : null;
+                return (
+                    <Button 
+                    onClick={() => handleViewReport(row.id)}
+                    className="w-full mt-6 bg-indigo-600 rounded-full hover:bg-indigo-700 mb-6"
+                    disabled={reportIdFromStorage === null}
+                    >
+                        Descargar Informe
+                    </Button>
+                );
+            },
+        },
+        // Agrega aquí las demás columnas que necesites
+    ];
+
+
+    console.log("reportIdInt", reportIdInt)
+    const { loading: loadingReport, error: errorReport, data: dataReport, refetch: refetchReport } = useQuery(GET_REPORT_QUERY, {
+
+        variables: { id: reportIdInt },
+        skip: reportIdInt === null
+    });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (reportIdInt !== null) {
+                const response = await refetchReport();
+                console.log("data getReport ", response.data);
+                // Check if data is defined before calling generateReport
+                if (response.data && response.data.pdf ) {
+                    //transformar data a pdf
+                    generateReport(response.data);
+                } else {
+                    console.log("Data is not yet available. Waiting for data...");
+                    alert("Este ticket no tiene un informe.");
+                }
+            }
+        };
+    
+        fetchData();
+    }, [reportIdInt]);
+    
+    const handleViewReport = (ticketId: number) => {
+        if (typeof window !== 'undefined') {
+            // Si window está definido, entonces estamos en el cliente y podemos acceder a localStorage
+            const reportIdFromStorage = localStorage.getItem(`reportIdForTicket${ticketId}`) ? parseInt(localStorage.getItem(`reportIdForTicket${ticketId}`) as string, 10) : null;
+            setReportIdInt(reportIdFromStorage);
+            if (reportIdFromStorage === null) {
+                alert("Este ticket no tiene un informe.");
+            }
+        }
+    };
+
+    if (loading || loadingInstitutions) return <p className="text-white">Loading...</p>;
+
+    if (error || errorInstitutions) return <p className="text-white">Error...</p>;
+
+    if (!dataInstitutions) return <p className="text-white">Loading institutions...</p>;
+
+    // Ahora puedes estar seguro de que dataInstitutions no es undefined cuando se renderiza la tabla
 
     return (
         <div>
@@ -103,7 +177,7 @@ function TestTicketsPage() {
             <select className="bg-[#16202a] text-white" value={institutionFilter} onChange={e => setInstitutionFilter(+e.target.value)}>
                 <option value={0}>All Institutions</option>
                 {dataInstitutions?.institutions?.map((institution: Institution) => (
-                    <option value={institution.id}>{institution.name}</option>
+                    <option key={institution.id} value={institution.id}>{institution.name}</option>
                 ))}
             </select>
             <select className="bg-[#16202a] text-white" value={archivedFilter === null ? '' : archivedFilter.toString()} onChange={e => setArchivedFilter(e.target.value === '' ? null : e.target.value === 'true')}>

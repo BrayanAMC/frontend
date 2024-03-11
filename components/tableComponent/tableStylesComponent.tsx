@@ -17,7 +17,12 @@ export const tableCustomStyles = {
     rows: {
         style: {
             color: "white",
-            backgroundColor: "#16202a"
+            backgroundColor: "#16202a",
+            minHeight: '72px', // override the row height
+            '&:hover': {
+                cursor: 'pointer',
+                backgroundColor: "#26313c",
+            }
         },
         stripedStyle: {
             color: "NORMALCOLOR",
@@ -34,7 +39,19 @@ export const tableCustomStyles = {
             color: "white",
             backgroundColor: "#8493A8"
         }
-    }
+    },
+    headCells: {
+        style: {
+            paddingLeft: '8px', // override the cell padding for head cells
+            paddingRight: '8px',
+        },
+    },
+    cells: {
+        style: {
+            paddingLeft: '8px', // override the cell padding for data cells
+            paddingRight: '8px',
+        },
+    },
   
     
 }
