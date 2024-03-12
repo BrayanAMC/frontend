@@ -117,6 +117,7 @@ function TestTicketsPage() {
             name: 'Institution',
             cell: (row: Ticket) => {
                 const institution = dataInstitutions?.institutions?.find((institution: Institution) => String(institution.id) === String(row.institutionId));
+                //console.log(row.institutionId)
                 return institution ? institution.name : 'N/A';
             },
             sortable: true

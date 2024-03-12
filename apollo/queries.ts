@@ -10,6 +10,7 @@ export const GET_TICKETS_BY_USER_ID_QUERY = gql`
       createdAt
       closedAt
       userId
+      institutionId
       archived
     }
   }
@@ -117,6 +118,19 @@ export const TEST_GET_ALL_TICKETS_QUERY = gql`
       userId
       institutionId
       archived
+    }
+  }
+`;
+
+export const GET_USER_QUERY = gql`
+  query GetUser($id: Int!) {
+    user(id: $id) {
+      id
+      firstName
+      lastName
+      email
+      role
+      institutionId
     }
   }
 `;

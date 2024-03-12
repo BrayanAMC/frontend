@@ -13,7 +13,6 @@ export enum RoleStatus {
 }
 
 
-
 interface User {
     id: number;
     firstName: string;
@@ -43,13 +42,7 @@ interface Institution {
 
 }
 
-const columns = [
-    { name: 'ID', selector: (row: User) => row.id, sortable: true },
-    { name: 'First Name', selector: (row: User) => row.firstName, sortable: true },
-    { name: 'Last Name', selector: (row: User) => row.lastName, sortable: true },
-    { name: 'Email', selector: (row: User) => row.email, sortable: true },
-    { name: 'Role', selector: (row: User) => row.role, sortable: true },
-]
+
 
 
 
@@ -80,6 +73,21 @@ function UsersPage() {
 
         },
     });
+
+    const columns = [
+        {
+            name: 'Institution',
+            cell: (row: User) => {
+                const institution = dataInstitutions?.institutions?.find((institution: Institution) => String(institution.id) === String(row.institutionId));
+                return institution ? institution.name : 'N/A';
+            },
+            sortable: true
+        },
+        { name: 'First Name', selector: (row: User) => row.firstName, sortable: true },
+        { name: 'Last Name', selector: (row: User) => row.lastName, sortable: true },
+        { name: 'Email', selector: (row: User) => row.email, sortable: true },
+        { name: 'Role', selector: (row: User) => row.role, sortable: true },
+    ]
 
     useEffect(() => {
         refetch();

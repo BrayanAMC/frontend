@@ -1,3 +1,4 @@
+/*
 'use client'
 import { ApolloClient, InMemoryCache, createHttpLink, useMutation, ApolloProvider, useQuery } from "@apollo/client";
 import { useSearchParams, useParams, ReadonlyURLSearchParams } from "next/navigation";
@@ -31,9 +32,17 @@ function TicketArchivedPage() {
     )
 
 } export default TicketArchivedPage
-/*
-export default () => (
-  <ApolloProvider client={client}>
-    <TicketArchivedPage />
-  </ApolloProvider>
-)*/
+
+
+*/
+'use client'
+
+import AdminTicketComponent from "@/components/ticketComponent/AdminTicketComponent"
+
+function TicketPage() {
+  return (
+    <div>
+      <AdminTicketComponent />
+    </div>
+  )
+}export default TicketPage

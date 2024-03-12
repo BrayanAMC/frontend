@@ -113,6 +113,11 @@ function TicketArchivedCardSingle({ id, subject, description, status, createdAt,
                 <p className="text-white mb-4 break-words overflow-auto">{description}</p>
                 <hr className="my-4 border-gray-200" />
                 <p className="mb-4 text-white">{createdAt}</p>
+                <hr className="my-4 border-gray-200" />
+
+                <Label className="text-white">Correo usuario</Label>
+                <h2 className="text-xl text-white font-semibold mb-2 break-words overflow-auto">{email}</h2>
+                <hr className="my-4 border-gray-200" />
 
                 <span
                     className={`inline-block px-3 py-1 rounded text-white ${status === "OPEN"
