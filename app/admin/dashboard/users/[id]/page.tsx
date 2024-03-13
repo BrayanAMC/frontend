@@ -50,43 +50,51 @@ function UserPage() {
   
 
   const handleDelete = async (e: React.FormEvent) => {
-    //const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+    if (window.confirm("¿Estás seguro que deseas eliminar este usuario?")) {
+      //const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
 
-    const { data } = await deleteUser({
-      variables: {
-        deleteUserInput: {
-          email: email,
+      const { data } = await deleteUser({
+        variables: {
+          deleteUserInput: {
+            email: email,
+          },
         },
-      },
-    });
-    //console.log("datos de la api llamada [id]: ", data);
-    if (data?.deleteUser?.success) {
-      alert("User deleted successfully");
-      window.location.href = "/admin/dashboard";
-    }
+      });
+      //console.log("datos de la api llamada [id]: ", data);
+      if (data?.deleteUser?.success) {
+        alert("User deleted successfully");
+        //window.location.href = "/admin/dashboard";
+        history.back();
+      }
+    }  
   };
 
   const handleEdit = async (e: React.FormEvent) => {
-    const { data } = await updateUser({
-      variables: {
-        updateUserInput: {
-          firstName: firstName,
-          lastName: lastName,
-          newEmail: email,
-          oldEmail: originalEmail,
+    if (window.confirm("¿Estás seguro que deseas editar este usuario?")) {
+      const url = new URL(window.location.href);
+      const { data } = await updateUser({
+        variables: {
+          updateUserInput: {
+            firstName: firstName,
+            lastName: lastName,
+            newEmail: email,
+            oldEmail: originalEmail,
+          },
         },
-      },
-    });
-    console.log("datos de la api handleEdit [id]: ", data);
-    if (data?.updateUser?.id) {
-      alert("User updated successfully");
-      //window.location.href = "/admin/dashboard";
-      setFirstName(data?.updateUser?.firstName);
-      setLastName(data?.updateUser?.lastName);
-      setEmail(data?.updateUser?.email);
-      const newUrl = `/admin/dashboard/users/${data.updateUser.id}?firstName=${encodeURIComponent(firstName ?? '')}&lastName=${encodeURIComponent(lastName ?? '')}&email=${encodeURIComponent(email ?? '')}&role=${encodeURIComponent(role ?? '')}&institutionId=${encodeURIComponent(institutionId ?? '')}`;
-      router.replace(newUrl);
-    }
+      });
+      console.log("datos de la api handleEdit [id]: ", data);
+      if (data?.updateUser?.id) {
+        alert("User updated successfully");
+        //window.location.href = "/admin/dashboard";
+        const searchParams = new URLSearchParams(url.search);
+        searchParams.set("firstName", data?.updateUser.firstName);
+        searchParams.set("lastName", data?.updateUser.lastName);
+        searchParams.set("email", data?.updateUser.email);
+        url.search = searchParams.toString();
+        window.history.replaceState({}, '', url.toString());
+        window.location.reload();
+      }
+    }  
   };
 
   const handleViewTickets = () => {

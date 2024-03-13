@@ -132,107 +132,117 @@ function AdminTicketComponent() {
   });
 
   const handleDeleteTicket = async (e: React.FormEvent) => {
-    if (status === "OPEN" || status === "CLOSED") {
-      console.log("en funcion handleDeleteTicket");
-      const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
-      const input = {
-        id: id,
-      };
-
-      const { data } = await deleteTicket({
-        variables: { id: idNumber },
-      });
-      //console.log("datos de la api llamada [id]: ", data);
-      if (data?.deleteTicket.success) {
-        alert("Ticket eliminado correctamente.");
-        window.location.href = "/dashboard/tickets";
+    if (window.confirm("¿Estás seguro de que quieres eliminar este ticket?")) {
+      if (status === "OPEN" || status === "CLOSED") {
+        console.log("en funcion handleDeleteTicket");
+        const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+        const input = {
+          id: id,
+        };
+  
+        const { data } = await deleteTicket({
+          variables: { id: idNumber },
+        });
+        //console.log("datos de la api llamada [id]: ", data);
+        if (data?.deleteTicket.success) {
+          alert("Ticket eliminado correctamente.");
+          //window.location.href = "/dashboard/tickets";
+          history.back();
+        }
+      } else {
+        alert("No puedes eliminar un ticket que está en progreso.");
       }
-    } else {
-      alert("No puedes eliminar un ticket que está en progreso.");
     }
   };
 
   const handleEdit = async (e: React.FormEvent) => {
-    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+    if (window.confirm("¿Estás seguro de que quieres editar este ticket?")) {
+      const url = new URL(window.location.href);
+      const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
 
-    const { data } = await updateTicket({
-      variables: {
-        updateTicketInput: {
-          id: idNumber,
-          subject: subject,
-          description: description,
+      const { data } = await updateTicket({
+        variables: {
+          updateTicketInput: {
+            id: idNumber,
+            subject: subject,
+            description: description,
+          },
         },
-      },
-    });
-    //console.log("data update ticket ", data);
-    if (data?.updateTicket.id) {
-      alert("Ticket updated successfully");
-      setSubject(data?.updateTicket.subject);
-      setDescription(data?.updateTicket.description);
-      const newUrl = `/admin/tickets/ticket/${userId}?subject=${encodeURIComponent(subject ?? '')}&description=${encodeURIComponent(description ?? '')}&status=${encodeURIComponent(status ?? '')}&createdAt=${encodeURIComponent(createdAt ?? '')}&userId=${encodeURIComponent(userId ?? '')}&archived=${encodeURIComponent(archived ?? '')}`;
-      router.replace(newUrl);
-      //window.location.href = `/admin/tickets/${userId}`;
-
-
-    }
+      });
+      //console.log("data update ticket ", data);
+      if (data?.updateTicket.id) {
+        alert("Ticket updated successfully");
+        //window.location.href = `/admin/tickets/${userId}`;
+        const searchParams = new URLSearchParams(url.search);
+        searchParams.set("subject", data?.updateTicket.subject);
+        searchParams.set("description", data?.updateTicket.description);
+        url.search = searchParams.toString();
+        window.history.replaceState({}, '', url.toString());
+        window.location.reload();
+      }
+    }  
   };
 
   const handleInProgress = async (e: React.FormEvent) => {
-    const url = new URL(window.location.href);
-    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
-    const userIdNumber = parseInt(Array.isArray(userId) ? userId[0] : userId, 10);
-    const adminUserIdNumber = parseInt(Array.isArray(adminUserId) ? adminUserId[0] : adminUserId, 10);
-    if (isNaN(adminUserIdNumber)) {
-      // Handle the case where adminUserId is null
-      alert("Admin user ID is not set.");
-      return;
-    }
-    const { data } = await changeStatusToInProgress({
-      variables: {
-        id: idNumber,
-        userId: userIdNumber,
-        assignedToId: adminUserIdNumber,
-      },
-    });
-    console.log("data changeStatusToInProgress ", data);
-    if (data?.changeStatusToInProgress.success) {
-      alert("Ticket updated successfully");
-      //cambiar el estado de la url a IN_PROGRESS
-      const searchParams = new URLSearchParams(url.search);
-      searchParams.set('status', 'IN_PROGRESS');
-      url.search = searchParams.toString();
-      window.history.replaceState({}, '', url.toString());
-      window.location.reload();
-    }
+    if (window.confirm("¿Estás seguro de que quieres cambiar el estado a IN_PROGRESS?")) {
+      const url = new URL(window.location.href);
+      const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+      const userIdNumber = parseInt(Array.isArray(userId) ? userId[0] : userId, 10);
+      const adminUserIdNumber = parseInt(Array.isArray(adminUserId) ? adminUserId[0] : adminUserId, 10);
+      if (isNaN(adminUserIdNumber)) {
+        // Handle the case where adminUserId is null
+        alert("Admin user ID is not set.");
+        return;
+      }
+      const { data } = await changeStatusToInProgress({
+        variables: {
+          id: idNumber,
+          userId: userIdNumber,
+          assignedToId: adminUserIdNumber,
+        },
+      });
+      console.log("data changeStatusToInProgress ", data);
+      if (data?.changeStatusToInProgress.success) {
+        alert("Ticket updated successfully");
+        //cambiar el estado de la url a IN_PROGRESS
+        const searchParams = new URLSearchParams(url.search);
+        searchParams.set('status', 'IN_PROGRESS');
+        url.search = searchParams.toString();
+        window.history.replaceState({}, '', url.toString());
+        window.location.reload();
+      }
+    }  
   };
 
   const handleClosed = async (e: React.FormEvent) => {
-    const url = new URL(window.location.href);
-    console.log("en funcion handleClosed");
-    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
-    const userIdNumber = parseInt(Array.isArray(userId) ? userId[0] : userId, 10);
-    const adminUserIdNumber = parseInt(Array.isArray(adminUserId) ? adminUserId[0] : adminUserId, 10);
-    if (isNaN(adminUserIdNumber)) {
-      // Handle the case where adminUserId is null
-      alert("Admin user ID is not set.");
-      return;
-    }
-    const { data } = await changeStatusToClosed({
-      variables: {
-        id: idNumber,
-        userId: userIdNumber,
-        assignedToId: adminUserIdNumber,
-      },
-    });
-    //console.log("data changeStatusToClosed ", data);
-    if (data?.changeStatusToClosed.success) {
-      alert("Ticket updated successfully");
-      const searchParams = new URLSearchParams(url.search);
-      searchParams.set('status', 'CLOSED');
-      url.search = searchParams.toString();
-      window.history.replaceState({}, '', url.toString());
-      window.location.reload();
-    }
+    if (window.confirm("¿Estás seguro de que quieres cambiar el estado a CLOSED?")) {
+      const url = new URL(window.location.href);
+      console.log("en funcion handleClosed");
+      const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+      const userIdNumber = parseInt(Array.isArray(userId) ? userId[0] : userId, 10);
+      const adminUserIdNumber = parseInt(Array.isArray(adminUserId) ? adminUserId[0] : adminUserId, 10);
+      if (isNaN(adminUserIdNumber)) {
+        // Handle the case where adminUserId is null
+        alert("Admin user ID is not set.");
+        return;
+      }
+      const { data } = await changeStatusToClosed({
+        variables: {
+          id: idNumber,
+          userId: userIdNumber,
+          assignedToId: adminUserIdNumber,
+        },
+      });
+      //console.log("data changeStatusToClosed ", data);
+      if (data?.changeStatusToClosed.success) {
+        alert("Ticket updated successfully");
+        const searchParams = new URLSearchParams(url.search);
+        searchParams.set('status', 'CLOSED');
+        url.search = searchParams.toString();
+        window.history.replaceState({}, '', url.toString());
+        window.location.reload();
+      }
+    }  
   }
 
   const handleCreateReport = async (e: React.FormEvent) => {
@@ -315,30 +325,32 @@ function AdminTicketComponent() {
   }
 
   const handleArchiveTicket = async (e: React.FormEvent) => {
-    const url = new URL(window.location.href);
-    console.log("en funcion handleArchiveTicket");
-    const ticketId = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del ticket pasado a entero
-    console.log("ticketId ", ticketId);
-    try {
-      const { data } = await archiveReport({
-        variables: {
-          ticketId: ticketId,
-        },
-      });
-      console.log("data archiveReport ", data);
+    if (window.confirm("¿Estás seguro de que quieres archivar este ticket?")) {
+      const url = new URL(window.location.href);
+      console.log("en funcion handleArchiveTicket");
+      const ticketId = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del ticket pasado a entero
+      console.log("ticketId ", ticketId);
+      try {
+        const { data } = await archiveReport({
+          variables: {
+            ticketId: ticketId,
+          },
+        });
+        console.log("data archiveReport ", data);
 
-      if (data?.archiveTicket.success) {
-        alert("Ticket archivado correctamente.");
-        //window.location.href = `/admin/tickets/${userId}`;
-        const searchParams = new URLSearchParams(url.search);
-        searchParams.set('archived', 'true');
-        url.search = searchParams.toString();
-        window.history.replaceState({}, '', url.toString());
-        window.location.reload();
+        if (data?.archiveTicket.success) {
+          alert("Ticket archivado correctamente.");
+          //window.location.href = `/admin/tickets/${userId}`;
+          const searchParams = new URLSearchParams(url.search);
+          searchParams.set('archived', 'true');
+          url.search = searchParams.toString();
+          window.history.replaceState({}, '', url.toString());
+          window.location.reload();
+        }
+      } catch (error) {
+        alert((error as Error).message);
       }
-    } catch (error) {
-      alert((error as Error).message);
-    }
+    }  
   }
   //obtener el email usando el userId del ticket
 
@@ -409,6 +421,7 @@ function AdminTicketComponent() {
         <Label className="text-white">Description</Label>
         <p className="mb-4 break-words overflow-auto text-white">{description}</p>
         <hr className="my-4 border-gray-200" />
+        <Label className="text-white">Fecha Creacion</Label>
         <p className="mb-4 text-white">{createdAt}</p>
         <hr className="my-4 border-gray-200" />
 
@@ -444,27 +457,32 @@ function AdminTicketComponent() {
                 <Input
                   className="text-white"
                   value={subject || ""}
+                  minLength={3}
+                  maxLength={100}
                   onChange={(e) => setSubject(e.target.value)}
                 />
               </div>
               <div className="mb-6">
-                <Input
-                  className="text-white"
+                <textarea
+                  className="w-full text-white bg-[#16202a]"
                   value={description || ""}
+                  rows={5}
+                  minLength={3}
+                  maxLength={300}
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
               <button
                 className="relative bottom-0 right-0 mb-16 mr-8 mr-2  p-2 bg-blue-500 text-white rounded-full"
                 onClick={handleEdit}
-                disabled={!subject || !description || !status || !createdAt}
+                disabled={!subject || !description || !status || !createdAt || subject.length < 3 || description.length < 3}
               >
                 <i className="material-icons">edit</i>
               </button>
               <button
                 className="relative bottom-0 right-0  mr-80 p-2 bg-red-500 text-white rounded-full"
                 onClick={handleDeleteTicket}
-                disabled={!subject || !description || !status || !createdAt}>
+                >
                 <i className="material-icons">delete</i>
               </button>
 

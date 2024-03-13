@@ -37,34 +37,45 @@ function InstitutionPage() {
   })
 
   const handleDelete = async (e: React.FormEvent) => {
-    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+    if (window.confirm("¿Estás seguro que deseas eliminar esta institución?")) {
+      const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
 
-    const { data } = await deleteInstitution({
-      variables: { id: idNumber },
-    });
-    //console.log("datos de la api llamada [id]: ", data);
-    if (data?.deleteInstitution?.success) {
-      alert("Institution deleted successfully");
-      window.location.href = "/admin/dashboard";
-    }
+      const { data } = await deleteInstitution({
+        variables: { id: idNumber },
+      });
+      //console.log("datos de la api llamada [id]: ", data);
+      if (data?.deleteInstitution?.success) {
+        alert("Institution deleted successfully");
+        history.back();
+      }
+    }  
   };
 
   const handleEdit = async (e: React.FormEvent) => {
-    const { data } = await updateInstitution({
-      variables: {
-        updateInstitutionInput: {
-          name: originalName,
-          newName: name,
-          newEmail: email,
-          newPhoneNumber: phoneNumber
+    if (window.confirm("¿Estás seguro que deseas editar esta institución?")) {
+      const url = new URL(window.location.href);
+      const { data } = await updateInstitution({
+        variables: {
+          updateInstitutionInput: {
+            name: originalName,
+            newName: name,
+            newEmail: email,
+            newPhoneNumber: phoneNumber
+          }
         }
+      })
+      console.log("data update user", data)
+      if (data?.updateInstitution?.id) {
+        alert("Institution updated successfully");
+        const searchParams = new URLSearchParams(url.search);
+        searchParams.set("name", data?.updateInstitution?.name);
+        searchParams.set("email", data?.updateInstitution?.email);
+        searchParams.set("phoneNumber", data?.updateInstitution?.phoneNumber);
+        url.search = searchParams.toString();
+        window.history.replaceState({}, "", url.toString());
+        window.location.reload();
       }
-    })
-    console.log("data update user", data)
-    if (data?.updateInstitution?.id) {
-      alert("Institution updated successfully");
-      window.location.href = "/admin/dashboard";
-    }
+    }  
   }
   
 
@@ -92,7 +103,16 @@ function InstitutionPage() {
           <Input
             className="text-white"
             value={phoneNumber || ""}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 11) {
+                setPhoneNumber(e.target.value);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (!/[0-9+]/.test(e.key) && !/Backspace|Delete|ArrowUp|ArrowDown|ArrowLeft|ArrowRight/.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
           />
         </div>
         <div className="mb-10">

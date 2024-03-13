@@ -1,18 +1,4 @@
-/*async function loadTicket(id){
-    const response = await fetch(`http://localhost:3000/api/tickets/${id}`);
-    const data = await response.json();
-    console.log(data);
 
-}*/
-
-/*export default function TicketPages() {
-    return (
-        <div>
-            <h1>TicketPages</h1>
-            
-        </div>
-    )
-}*/
 "use client";
 import {
   useSearchParams, useParams,
@@ -100,44 +86,58 @@ function TicketPage() {
     client,
   });
 
-  const handleDeleteTicket = async (e: React.FormEvent) => {
-    if (status === "OPEN" || status === "CLOSED") {
-      console.log("en funcion handleDeleteTicket");
-      const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
-      const input = {
-        id: id,
-      };
+  
 
-      const { data } = await deleteTicket({
-        variables: { id: idNumber },
-      });
-      console.log("datos de la api llamada [id]: ", data);
-      if (data?.deleteTicket.success) {
-        alert("Ticket eliminado correctamente.");
-        window.location.href = "/dashboard/tickets";
+  const handleDeleteTicket = async (e: React.FormEvent) => {
+    if (window.confirm("¿Estás seguro de que quieres eliminar este ticket?")) {
+      if (status === "OPEN" || status === "CLOSED") {
+        console.log("en funcion handleDeleteTicket");
+        const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+        const input = {
+          id: id,
+        };
+  
+        const { data } = await deleteTicket({
+          variables: { id: idNumber },
+        });
+        //console.log("datos de la api llamada [id]: ", data);
+        if (data?.deleteTicket.success) {
+          alert("Ticket eliminado correctamente.");
+          //window.location.href = "/dashboard/tickets";
+          history.back();
+        }
+      } else {
+        alert("No puedes eliminar un ticket que está en progreso.");
       }
-    } else {
-      alert("No puedes eliminar un ticket que está en progreso.");
     }
   };
 
   const handleEdit = async (e: React.FormEvent) => {
-    const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
+    if(window.confirm("¿Estás seguro de que quieres editar este ticket?")){
+      const url = new URL(window.location.href);
+      const idNumber = parseInt(Array.isArray(id) ? id[0] : id, 10);
 
-    const { data } = await updateTicket({
-      variables: {
-        updateTicketInput: {
-          id: idNumber,
-          subject: subject,
-          description: description,
+      const { data } = await updateTicket({
+        variables: {
+          updateTicketInput: {
+            id: idNumber,
+            subject: subject,
+            description: description,
+          },
         },
-      },
-    });
-    console.log("data update ticket ", data);
-    if (data?.updateTicket.id) {
-      alert("Ticket updated successfully");
-      window.location.href = "/dashboard/tickets";
-    }
+      });
+      console.log("data update ticket ", data);
+      if (data?.updateTicket.id) {
+        alert("Ticket updated successfully");
+        //window.location.href = "/dashboard/tickets";
+        const searchParams = new URLSearchParams(url.search);
+        searchParams.set("subject", data?.updateTicket.subject);
+        searchParams.set("description", data?.updateTicket.description);
+        url.search = searchParams.toString();
+        window.history.replaceState({}, "", url.toString());
+        window.location.reload();
+      }
+    }  
   };
 
   //llamada a la api para obtener el reporte
@@ -166,24 +166,27 @@ function TicketPage() {
   }
 
   const handleArchiveTicket = async (e: React.FormEvent) => {
-    console.log("en funcion handleArchiveTicket");
-    const ticketId = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del ticket pasado a entero
-    console.log("ticketId ", ticketId);
-    try {
-      const { data } = await archiveReport({
-        variables: {
-          ticketId: ticketId,
-        },
-      });
-      console.log("data archiveReport ", data);
+    if(window.confirm("¿Estás seguro de que quieres archivar este ticket?")){
+      //console.log("en funcion handleArchiveTicket");
+      const ticketId = parseInt(Array.isArray(id) ? id[0] : id, 10);//id del ticket pasado a entero
+      console.log("ticketId ", ticketId);
+      try {
+        const { data } = await archiveReport({
+          variables: {
+            ticketId: ticketId,
+          },
+        });
+        //console.log("data archiveReport ", data);
 
-      if (data?.archiveTicket.success) {
-        alert("Ticket archivado correctamente.");
-        window.location.href = `/admin/tickets/${userId}`;
+        if (data?.archiveTicket.success) {
+          alert("Ticket archivado correctamente.");
+          //window.location.href = `/admin/tickets/${userId}`;
+          history.back();
+        }
+      } catch (error) {
+        alert((error as Error).message);
       }
-    } catch (error) {
-      alert((error as Error).message);
-    }
+    }  
   }
   //const { subject } = useParams();
 
@@ -240,6 +243,7 @@ function TicketPage() {
                 className="bg-[#16202a] text-white"
                 value={subject || ""}
                 onChange={(e) => setSubject(e.target.value)}
+                minLength={3}
                 maxLength={100} // Limita la entrada a 100 caracteres
               /></div>
           )}
@@ -260,6 +264,7 @@ function TicketPage() {
                 value={description || ""}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={5} // Ajusta esto para cambiar la altura
+                
                 maxLength={300} // Limita la entrada a 500 caracteres
               /></div>
           )}
@@ -272,7 +277,7 @@ function TicketPage() {
               onClick={(e) => {
                 handleDeleteTicket(e);
               }}
-              disabled={!subject || !description || !status || !createdAt}
+              
             >
               <i className="material-icons">delete</i>
             </button>
@@ -285,7 +290,7 @@ function TicketPage() {
               onClick={(e) => {
                 handleEdit(e);
               }}
-              disabled={!subject || !description || !status || !createdAt}
+              disabled={  !subject || !description || !status || !createdAt || subject.length < 3 || description.length < 3}
             >
               <i className="material-icons">edit</i>
             </button>

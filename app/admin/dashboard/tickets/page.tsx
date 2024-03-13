@@ -7,37 +7,7 @@ import { tableCustomStyles } from '@/components/tableComponent/tableStylesCompon
 import { generateReport } from '@/components/generateReport/generateReport';
 import { GET_REPORT_QUERY } from "@/apollo/queries";
 import { Button } from "@/components/ui/button"
-
-export enum TicketStatus {
-    OPEN = "OPEN",
-    IN_PROGRESS = "IN_PROGRESS",
-    CLOSED = "CLOSED",
-}
-
-interface Ticket {
-    id: number;
-    subject: string;
-    description: string;
-    status: TicketStatus;
-    createdAt: string;
-    closedAt: string | null;
-    userId: number;
-    assignedToId: number | null;
-    institutionId: number;
-    archived: boolean;
-
-}
-
-
-interface Institution {
-    id: number;
-    name: string;
-    email: string;
-    phoneNumber: string;
-
-}
-
-
+import {Ticket, TicketStatus, Institution} from "@/interfaces/interfaces";
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:3002/graphql',

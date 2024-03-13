@@ -62,7 +62,7 @@ function TicketForm() {
         variables: { createTicketInput: input },
       });
 
-      console.log("datos de la api: ", data);
+      //console.log("datos de la api: ", data);
       if (data && data.createTicket) {
         setSubject("");
         setDescription("");
@@ -96,6 +96,7 @@ function TicketForm() {
               onChange={(e) => setSubject(e.target.value)}
               id="subject"
               type="text"
+              minLength={3}
               maxLength={100}
               className="bg-[#16202a] text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
@@ -113,7 +114,9 @@ function TicketForm() {
               onChange={(e) => setDescription(e.target.value)}
               id="description"
               rows={5} // Ajusta esto para cambiar la altura
+              minLength={3}
               maxLength={300} // Limita la entrada a 500 caracteres
+              
               className="bg-[#16202a] text-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
           </div>
