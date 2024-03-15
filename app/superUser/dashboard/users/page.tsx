@@ -41,7 +41,7 @@ function UsersPage() {
     useEffect(() => {
         refetch();
 
-    }, []);
+    }, [refetch]);
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error</p>;
     return (
@@ -56,8 +56,11 @@ function UsersPage() {
         </div>
 
     );
-} export default () => (
+} 
+const UsersPageComponent2 = () => (
     <ApolloProvider client={client}>
         <UsersPage />
     </ApolloProvider>
-);
+)
+UsersPageComponent2.displayName = "UsersPageComponent2";
+export default UsersPageComponent2;

@@ -701,8 +701,10 @@ function AdminTicketComponent() {
     </div>
   );
 }
-export default () => (
+const AdminTicketComponentComponent = () => (
   <ApolloProvider client={client}>
     <AdminTicketComponent />
   </ApolloProvider>
-)
+);
+AdminTicketComponentComponent.displayName = 'AdminTicketComponentComponent';
+export default AdminTicketComponentComponent;

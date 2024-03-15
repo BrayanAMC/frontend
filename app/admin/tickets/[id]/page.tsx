@@ -8,37 +8,7 @@ import { useSearchParams, useParams, ReadonlyURLSearchParams } from 'next/naviga
 import { Button } from "@/components/ui/button"
 import { GET_REPORT_QUERY } from "@/apollo/queries";
 import { generateReport } from '@/components/generateReport/generateReport';
-
-export enum TicketStatus {
-    OPEN = "OPEN",
-    IN_PROGRESS = "IN_PROGRESS",
-    CLOSED = "CLOSED",
-}
-
-interface Ticket {
-    id: number;
-    subject: string;
-    description: string;
-    status: TicketStatus;
-    createdAt: string;
-    closedAt: string | null;
-    userId: number;
-    assignedToId: number | null;
-    institutionId: number;
-    archived: boolean;
-
-}
-
-
-interface Institution {
-    id: number;
-    name: string;
-    email: string;
-    phoneNumber: string;
-
-}
-
-
+import { Ticket, TicketStatus, Institution } from "@/interfaces/interfaces";
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:3002/graphql',
@@ -169,7 +139,7 @@ function TicketsPage() {
         };
     
         fetchData();
-    }, [reportIdInt]);
+    }, [reportIdInt, refetchReport]);
 
     const handleViewReport = (ticketId: number) => {
         if (typeof window !== 'undefined') {
@@ -228,8 +198,11 @@ function TicketsPage() {
 
 
 
-} export default () => (
+}
+const TicketsPageComponent1 = () => (
     <ApolloProvider client={client}>
         <TicketsPage />
     </ApolloProvider>
 );
+TicketsPageComponent1.displayName = 'TicketsPageComponent1';
+export default TicketsPageComponent1;

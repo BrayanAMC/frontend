@@ -317,8 +317,11 @@ function TicketPage() {
     </div>
   );
 }
-export default () => (
- <ApolloProvider client={client}>
+const TicketPageComponent3 = () => (
+  <ApolloProvider client={client}>
     <TicketPage />
   </ApolloProvider>
-)
+);
+TicketPageComponent3.displayName = 'TicketPageComponent3';
+export default TicketPageComponent3;
+

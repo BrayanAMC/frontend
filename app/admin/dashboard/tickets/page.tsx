@@ -139,7 +139,7 @@ function TestTicketsPage() {
         };
     
         fetchData();
-    }, [reportIdInt]);
+    }, [reportIdInt, refetchReport]);
     
     const handleViewReport = (ticketId: number) => {
         if (typeof window !== 'undefined') {
@@ -208,11 +208,11 @@ function TestTicketsPage() {
         </div>
     )
 
-
-
-
-} export default () => (
+}
+const TestTicketsPageComponent = () => (
     <ApolloProvider client={client}>
         <TestTicketsPage />
     </ApolloProvider>
-);
+); 
+TestTicketsPageComponent.displayName = 'TestTicketsPageComponent';
+export default TestTicketsPageComponent;

@@ -237,8 +237,11 @@ function RegisterForm() {
     </div>
 
   );
-} export default () => (
+} 
+const RegisterFormComponent = () => (
   <ApolloProvider client={client}>
     <RegisterForm />
   </ApolloProvider>
 );
+RegisterFormComponent.displayName = 'RegisterFormComponent';
+export default RegisterFormComponent;

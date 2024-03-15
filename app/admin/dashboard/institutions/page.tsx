@@ -43,7 +43,7 @@ function InstitutionsPage(){
     useEffect(() => {
         refetch();
     
-    }, []);
+    }, [refetch]);
 
     const filteredInstitutions = Institutions.filter((institution: Institution) => {
         if (searchValue && !(institution.name.includes(searchValue) || institution.email.includes(searchValue) || institution.phoneNumber.includes(searchValue))) {
@@ -80,8 +80,11 @@ function InstitutionsPage(){
             )}
         </div>
     )
-}export default () => (
+}
+const InstitutionsPageComponent1 = () => (
     <ApolloProvider client={client}>
         <InstitutionsPage />
     </ApolloProvider>
 );
+InstitutionsPageComponent1.displayName = 'InstitutionsPageComponent1';
+export default InstitutionsPageComponent1;

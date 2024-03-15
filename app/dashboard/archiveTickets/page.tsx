@@ -144,7 +144,7 @@ function TicketPages() {
         };
     
         fetchData();
-    }, [reportIdInt]);
+    }, [reportIdInt, refetchReport]);
     
     const handleViewReport = (ticketId: number) => {
         if (typeof window !== 'undefined') {
@@ -200,9 +200,11 @@ function TicketPages() {
     )
 
 
-} export default () => (
+}
+const TicketPageComponent1 = () => (
     <ApolloProvider client={client}>
         <TicketPages />
     </ApolloProvider>
 );
-//"/dashboard/archiveTickets/ticket"
+TicketPageComponent1.displayName = 'TicketPageComponent1';
+export default TicketPageComponent1;

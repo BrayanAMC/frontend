@@ -84,8 +84,12 @@ function Dashboard() {
       </div>
     </main>
     )
-  }export default () => (
+  }
+  const DashboardComponent = () => (
     <ApolloProvider client={client}>
       <Dashboard />
     </ApolloProvider>
-  )
+  );
+  DashboardComponent.displayName = 'DashboardComponent';
+  export default DashboardComponent;
+  

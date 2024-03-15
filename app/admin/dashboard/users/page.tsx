@@ -6,26 +6,9 @@ import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
 import '@/styles/datatable.css';
 import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
-import {Ticket, TicketStatus, Institution} from "@/interfaces/interfaces";
-
-export enum RoleStatus {
-    ADMIN = "admin",
-    SUPER_ADMIN = "superadmin",
-    USER = "user",
-}
+import {User, RoleStatus, Institution} from "@/interfaces/interfaces";
 
 
-interface User {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    accessToken: string;
-    recoveryPasswordToken: string;
-    role: RoleStatus;
-    institutionId?: number;
-}
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:3002/graphql',
@@ -87,7 +70,7 @@ function UsersPage() {
     useEffect(() => {
         refetch();
 
-    }, []);
+    }, [refetch]);
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error</p>;
     return (
@@ -130,9 +113,13 @@ function UsersPage() {
         </div>
 
     );
-} export default () => (
+
+    
+}
+const UsersPageComponent1 = () => (
     <ApolloProvider client={client}>
         <UsersPage />
     </ApolloProvider>
 );
-//"/admin/dashboard/users"
+UsersPageComponent1.displayName = 'UsersPageComponent1';
+export default UsersPageComponent1;

@@ -11,37 +11,7 @@ import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponen
 import { Button } from "@/components/ui/button"
 import { generateReport } from '@/components/generateReport/generateReport';
 import { GET_REPORT_QUERY } from "@/apollo/queries";
-
-export enum TicketStatus {
-    OPEN = "OPEN",
-    IN_PROGRESS = "IN_PROGRESS",
-    CLOSED = "CLOSED",
-}
-
-interface Ticket {
-    id: number;
-    subject: string;
-    description: string;
-    status: TicketStatus;
-    createdAt: string;
-    closedAt: string | null;
-    userId: number;
-    assignedToId: number | null;
-    institutionId: number;
-    archived: boolean;
-
-}
-
-
-interface Institution {
-    id: number;
-    name: string;
-    email: string;
-    phoneNumber: string;
-
-}
-
-
+import { Ticket, TicketStatus, Institution } from "@/interfaces/interfaces";
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:3002/graphql',
@@ -174,7 +144,7 @@ function TicketsPage() {
         };
     
         fetchData();
-    }, [reportIdInt]);
+    }, [reportIdInt, refetchReport]);
     
     const handleViewReport = (ticketId: number) => {
         if (typeof window !== 'undefined') {
@@ -240,8 +210,11 @@ function TicketsPage() {
 
 
 
-} export default () => (
+}
+const TicketsPageComponent2 = () => (  
     <ApolloProvider client={client}>
         <TicketsPage />
     </ApolloProvider>
 );
+TicketsPageComponent2.displayName = 'TicketsPageComponent2';
+export default TicketsPageComponent2;

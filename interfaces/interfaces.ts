@@ -26,3 +26,32 @@ export interface Institution {
     phoneNumber: string;
 
 }
+
+export enum RoleStatus {
+    ADMIN = "admin",
+    SUPER_ADMIN = "superadmin",
+    USER = "user",
+}
+
+
+export interface User {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    accessToken: string;
+    recoveryPasswordToken: string;
+    role: RoleStatus;
+    institutionId?: number;
+}
+
+export type TicketProps = {
+    id: string | number;
+    subject: string;
+    description: string;
+    status: string;
+    createdAt: string;
+    userId: number;
+    email: string;
+};

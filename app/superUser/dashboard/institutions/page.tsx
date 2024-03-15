@@ -32,7 +32,7 @@ function InstitutionsPage(){
     useEffect(() => {
         refetch();
     
-    }, []);
+    }, [refetch]);
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error</p>;
     return (
@@ -46,8 +46,11 @@ function InstitutionsPage(){
             )}
         </div>
     )
-}export default () => (
+}
+const InstitutionsPageComponent2 = () => (
     <ApolloProvider client={client}>
         <InstitutionsPage />
     </ApolloProvider>
-);
+)
+InstitutionsPageComponent2.displayName = "InstitutionsPageComponent2";
+export default InstitutionsPageComponent2;

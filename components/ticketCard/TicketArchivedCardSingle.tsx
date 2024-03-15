@@ -7,6 +7,7 @@ import { SEND_REPORT_TO_USER_MUTATION } from "@/apollo/mutation";
 import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider, useMutation } from "@apollo/client";
 import { generateReport } from '@/components/generateReport/generateReport';
 import { generateReportToBase64 } from '@/components/generateReport/generateReport';
+import { TicketProps } from "@/interfaces/interfaces";
 
 const httpLink = createHttpLink({
     uri: "http://localhost:3002/graphql",
@@ -16,16 +17,6 @@ const client = new ApolloClient({
     link: httpLink,
     cache: new InMemoryCache(),
 });
-
-type TicketProps = {
-    id: string | number;
-    subject: string;
-    description: string;
-    status: string;
-    createdAt: string;
-    userId: number;
-    email: string;
-};
 
 
 function TicketArchivedCardSingle({ id, subject, description, status, createdAt, userId, email }: TicketProps) {
@@ -147,7 +138,8 @@ function TicketArchivedCardSingle({ id, subject, description, status, createdAt,
             </div>
         </div>
     );
-} export default ({ id, subject, description, status, createdAt, userId, email }: TicketProps) => (
+} 
+const TicketArchivedCardSingleComponent = ({ id, subject, description, status, createdAt, userId, email }: TicketProps) => (
     <ApolloProvider client={client}>
         <TicketArchivedCardSingle
             id={id}
@@ -156,7 +148,9 @@ function TicketArchivedCardSingle({ id, subject, description, status, createdAt,
             status={status}
             createdAt={createdAt}
             userId={userId}
-            email= {email}
+            email={email}
         />
     </ApolloProvider>
-)
+);
+TicketArchivedCardSingleComponent.displayName = 'TicketArchivedCardSingleComponent';
+export default TicketArchivedCardSingleComponent;
