@@ -165,12 +165,9 @@ export default function LoginForm() {
           </p>
         </div>
         <div className="relative hidden md:block">
-          <Image
-            className="object-cover "
-            fill={true}
-            src={vicuna04}
-            alt="bg-image"
-          />
+        <div className="absolute top-0 left-0 w-full h-full object-cover">
+        <Image className="object-cover" src={vicuna04} alt="vicuna" width={1080} height={1080} priority />
+        </div>
         </div>
       </div>
     </main>
