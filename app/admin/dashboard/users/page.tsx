@@ -6,6 +6,8 @@ import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
 import '@/styles/datatable.css';
 import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
+import {Ticket, TicketStatus, Institution} from "@/interfaces/interfaces";
+
 export enum RoleStatus {
     ADMIN = "admin",
     SUPER_ADMIN = "superadmin",
@@ -21,7 +23,7 @@ interface User {
     password: string;
     accessToken: string;
     recoveryPasswordToken: string;
-    role: string;
+    role: RoleStatus;
     institutionId?: number;
 }
 
@@ -34,13 +36,6 @@ const client = new ApolloClient({
     cache: new InMemoryCache(),
 });
 
-interface Institution {
-    id: number;
-    name: string;
-    email: string;
-    phoneNumber: string;
-
-}
 
 
 
