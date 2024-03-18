@@ -9,11 +9,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, gql, useMutation } from "@
 import { RECOVERY_PASSWORD_MUTATION } from "@/apollo/mutation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-
-const httpLink = createHttpLink({
-    uri: 'http://localhost:3002/graphql',
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
     link: httpLink,

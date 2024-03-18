@@ -5,10 +5,7 @@ import ViewArchivedTicketsButtom from "@/components/dashboard/ViewArchivedTicket
 import React, { useEffect, useState } from 'react';
 import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider } from "@apollo/client"
 import { GET_INSTITUTION_QUERY } from '@/apollo/queries';
-
-const httpLink = createHttpLink({
-  uri: 'http://localhost:3002/graphql',
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
   link: httpLink,

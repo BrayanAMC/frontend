@@ -5,7 +5,7 @@ import InstitutionCard from "@/components/superAdmin/viewInstitutions/Institutio
 import DataTable from 'react-data-table-component';
 import { useState, useEffect } from 'react';
 import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
-
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 interface Institution {
     id: number;
@@ -22,9 +22,7 @@ const columns =[
     {name: 'Phone Number', selector: (row: Institution) => row.phoneNumber, sortable: true},
 ]
 
-const httpLink = createHttpLink({
-    uri: 'http://localhost:3002/graphql',
-});
+
 const client = new ApolloClient({
     link: httpLink,
     cache: new InMemoryCache(),

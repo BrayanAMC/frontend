@@ -36,11 +36,7 @@ import { generateReport } from '@/components/generateReport/generateReport';
 import queryString from 'query-string';
 import { generateReportToBase64 } from '@/components/generateReport/generateReport';
 import { SEND_REPORT_TO_USER_MUTATION } from "@/apollo/mutation";
-
-
-const httpLink = createHttpLink({
-  uri: "http://localhost:3002/graphql",
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
   link: httpLink,

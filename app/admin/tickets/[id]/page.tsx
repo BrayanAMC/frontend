@@ -9,10 +9,7 @@ import { Button } from "@/components/ui/button"
 import { GET_REPORT_QUERY } from "@/apollo/queries";
 import { generateReport } from '@/components/generateReport/generateReport';
 import { Ticket, TicketStatus, Institution } from "@/interfaces/interfaces";
-
-const httpLink = createHttpLink({
-    uri: 'http://localhost:3002/graphql',
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
     link: httpLink,

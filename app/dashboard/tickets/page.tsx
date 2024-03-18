@@ -9,10 +9,7 @@ import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponen
 import {Ticket, TicketStatus, Institution} from "@/interfaces/interfaces";
 import { Button } from "@/components/ui/button"
 import { generateReport } from '@/components/generateReport/generateReport';
-
-const httpLink = createHttpLink({
-    uri: 'http://localhost:3002/graphql',
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
     link: httpLink,

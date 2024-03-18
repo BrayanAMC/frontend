@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import { useEffect, useState } from "react"
 import { ApolloClient, InMemoryCache, createHttpLink, gql, useMutation } from "@apollo/client";
 import { CREATE_INSTITUTION_MUTATION } from "@/apollo/mutation";
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 function CreateInstitutionForm(){
 
@@ -12,9 +13,7 @@ function CreateInstitutionForm(){
     const [ email, setEmail ] = useState('');
     const [ phoneNumber, setPhone ] = useState('');
 
-    const httpLink = createHttpLink({
-        uri: 'http://localhost:3002/graphql',
-    });
+    
 
     const client = new ApolloClient({
         link: httpLink,

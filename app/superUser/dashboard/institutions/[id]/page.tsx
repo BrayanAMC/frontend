@@ -10,10 +10,7 @@ import { DELETE_INSTITUTION_MUTATION } from "@/apollo/mutation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { UPDATE_INSTITUTION_MUTATION } from "@/apollo/mutation";
-
-const httpLink = createHttpLink({
-  uri: "http://localhost:3002/graphql",
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
   link: httpLink,

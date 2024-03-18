@@ -8,10 +8,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider, 
 import { generateReport } from '@/components/generateReport/generateReport';
 import { generateReportToBase64 } from '@/components/generateReport/generateReport';
 import { TicketProps } from "@/interfaces/interfaces";
-
-const httpLink = createHttpLink({
-    uri: "http://localhost:3002/graphql",
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
     link: httpLink,

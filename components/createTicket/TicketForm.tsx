@@ -11,6 +11,7 @@ import {
   useMutation,
 } from "@apollo/client";
 import { CREATE_TICKET_MUTATION } from "@/apollo/mutation";
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 function TicketForm() {
   const [subject, setSubject] = useState("");
@@ -20,9 +21,6 @@ function TicketForm() {
   const [error, setError] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
 
-  const httpLink = createHttpLink({
-    uri: "http://localhost:3002/graphql",
-  });
 
   const client = new ApolloClient({
     link: httpLink,

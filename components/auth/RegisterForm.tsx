@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { REGISTER_USER_MUTATION } from "@/apollo/mutation";
 import { GET_INSTITUTIONS_QUERY } from "@/apollo/queries";
 import exp from "constants";
-
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 interface Institution {
   id: number;
@@ -19,10 +19,6 @@ interface Institution {
   phoneNumber: string;
 
 }
-
-const httpLink = createHttpLink({
-  uri: 'http://localhost:3002/graphql',
-});
 
 const client = new ApolloClient({
   link: httpLink,

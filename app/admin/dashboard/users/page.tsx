@@ -7,12 +7,7 @@ import { useState, useEffect } from 'react';
 import '@/styles/datatable.css';
 import {tableCustomStyles} from '@/components/tableComponent/tableStylesComponent';
 import {User, RoleStatus, Institution} from "@/interfaces/interfaces";
-
-
-
-const httpLink = createHttpLink({
-    uri: 'http://localhost:3002/graphql',
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
     link: httpLink,

@@ -13,11 +13,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import Link from 'next/link';
 import { useEffect } from 'react';
-
-
-const httpLink = createHttpLink({
-  uri: "http://localhost:3002/graphql",
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const client = new ApolloClient({
   link: httpLink,

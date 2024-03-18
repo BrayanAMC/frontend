@@ -3,6 +3,7 @@ import { GET_INSTITUTIONS_QUERY } from "@/apollo/queries";
 import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider } from "@apollo/client"
 import { useEffect } from "react";
 import InstitutionCard from "@/components/superAdmin/viewInstitutions/InstitutionCard/InstitutionCard";
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 interface Institution {
     id: number;
@@ -12,9 +13,6 @@ interface Institution {
 
 }
 
-const httpLink = createHttpLink({
-    uri: 'http://localhost:3002/graphql',
-});
 const client = new ApolloClient({
     link: httpLink,
     cache: new InMemoryCache(),

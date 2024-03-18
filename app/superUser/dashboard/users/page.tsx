@@ -3,6 +3,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, useQuery, ApolloProvider }
 import { GET_USERS_QUERY } from "@/apollo/queries";
 import { useEffect } from "react";
 import UserCard from "@/components/superAdmin/dashboard/UserCard";
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 interface User {
     id: number;
@@ -21,9 +22,6 @@ interface UserCardProps {
     path: string;
 }
 
-const httpLink = createHttpLink({
-    uri: 'http://localhost:3002/graphql',
-});
 
 const client = new ApolloClient({
     link: httpLink,

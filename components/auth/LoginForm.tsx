@@ -11,11 +11,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, useMutation } from "@apoll
 import { setContext } from '@apollo/client/link/context';
 import Image from 'next/image';
 import vicuna04 from '@/img/vicuna04.jpg'
-
-
-const httpLink = createHttpLink({
-  uri: 'http://localhost:3002/graphql',
-});
+import { httpLink } from "@/components/apolloConfig/apolloConfig";
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('tokenUser');
