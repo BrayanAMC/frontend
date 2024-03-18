@@ -10,7 +10,7 @@ export default function HomePage() {
         <p className="text-2xl text-white">Disfruta de nuestra plataforma</p>
         <div className='text-2xl text-white mt-6'>
           <Link href="/auth/login  ">
-            <h1>Login</h1>
+            <h1>Login </h1>
           </Link>
         </div>
       </div>
