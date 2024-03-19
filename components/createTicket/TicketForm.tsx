@@ -60,7 +60,7 @@ function TicketForm() {
         variables: { createTicketInput: input },
       });
 
-      //console.log("datos de la api: ", data);
+      console.log("datos de la api: ", data);
       if (data && data.createTicket) {
         setSubject("");
         setDescription("");
