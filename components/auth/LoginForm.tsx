@@ -16,7 +16,7 @@ import { httpLink } from "@/components/apolloConfig/apolloConfig";
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('tokenUser');
   console.log("token del user storage: ", token);
-  console.log("GATEWAY_DOMAIN: ",process.env.GATEWAY_DOMAIN)
+  console.log("GATEWAY_DOMAIN: ",process.env.GATEWAY)
   const authHeaders = {
     ...headers,
     authorization: token ? `Bearer ${token}` : "",
