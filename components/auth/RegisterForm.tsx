@@ -172,7 +172,7 @@ function RegisterForm() {
             id="role"
           >
             <option className="text-white" value="user">Usuario</option>
-            <option value="admin text-white">Administrador</option>
+            <option className="text-white" value="admin">Administrador</option>
           </select>
         </div>
         {role === "user" && (
