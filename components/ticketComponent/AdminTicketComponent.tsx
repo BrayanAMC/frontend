@@ -65,6 +65,7 @@ function AdminTicketComponent() {
   const [description, setDescription] = useState(sorted.get("description"));
   const status = sorted.get("status");
   const createdAt = sorted.get("createdAt");
+  let formattedDate = ""; if (createdAt) { formattedDate = new Date(createdAt).toLocaleDateString('es-ES');}
   const userId = sorted.get("userId"); //id del usuario dueño del ticket
   const archived = sorted.get("archived");
   const [adminUserId, setAdminUserId] = useState<string | null>(null); //id del admin
@@ -356,7 +357,7 @@ function AdminTicketComponent() {
         <p className="mb-4 break-words overflow-auto text-white">{description}</p>
         <hr className="my-4 border-gray-200" />
         <Label className="text-white">Fecha Creacion</Label>
-        <p className="mb-4 text-white">{createdAt}</p>
+        <p className="mb-4 text-white">{formattedDate}</p>
         <hr className="my-4 border-gray-200" />
         <Label className="text-white">Correo usuario</Label>
         <h2 className="text-xl text-white font-semibold mb-2 break-words overflow-auto">{emailUser}</h2>
